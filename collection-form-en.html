@@ -1,0 +1,925 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CNC ELECTRIC Customer Demand Collection Form</title>
+  <link href="https://fonts.googleapis.com/css?family=Poppins:400,600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.8/dist/chart.umd.min.js"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: '#00539c',
+            secondary: '#0070f3',
+            accent: '#36b37e',
+            neutral: '#f5f8fa',
+            'neutral-dark': '#e6eef5',
+          },
+          fontFamily: {
+            poppins: ['Poppins', 'sans-serif'],
+          },
+        },
+      }
+    }
+  </script>
+  <style type="text/tailwindcss">
+    @layer utilities {
+      .form-input-focus {
+        @apply focus:ring-2 focus:ring-primary/50 focus:border-primary focus:outline-none;
+      }
+      .form-transition {
+        @apply transition-all duration-300 ease-in-out;
+      }
+      .card-hover {
+        @apply hover:shadow-lg hover:-translate-y-1 transition-all duration-300;
+      }
+      .section-divider {
+        @apply w-16 h-1 bg-accent my-6 rounded-full;
+      }
+      .form-section {
+        @apply bg-white rounded-xl shadow-sm p-6 mb-8 transition-all duration-300 hover:shadow-md;
+      }
+      .data-grid {
+        @apply grid grid-cols-1 md:grid-cols-2 gap-4;
+      }
+      .data-item {
+        @apply p-3 bg-neutral rounded-lg;
+      }
+      .link-button {
+        @apply inline-flex items-center text-primary hover:text-secondary transition-colors font-medium;
+      }
+      .email-required-alert {
+        @apply bg-amber-50 border-l-4 border-amber-400 p-3 my-3 text-amber-700 text-sm;
+      }
+      .company-title {
+        @apply text-2xl font-bold text-primary mb-2 tracking-wide;
+      }
+    }
+  </style>
+</head>
+<body class="font-poppins bg-neutral text-gray-800 min-h-screen">
+  <div class="container mx-auto px-4 py-8 max-w-5xl">
+    <!-- 公司标题和页面标题 -->
+    <div class="text-center mb-4">
+      <h1 class="company-title">CNC ELECTRIC</h1>
+    </div>
+    
+    <!-- 页面标题和说明 -->
+    <div class="text-center mb-10">
+      <div class="inline-block bg-primary/10 p-1 rounded-full mb-4">
+        <i class="fas fa-building text-3xl text-primary"></i>
+      </div>
+      <h2 class="text-[clamp(1.8rem,4vw,2.5rem)] font-bold text-primary mb-4">客户信息收集表</h2>
+      <h3 class="text-xl text-gray-600 mb-6">Customer Demand Collection Form</h3>
+      <p class="text-gray-600 max-w-3xl mx-auto">感谢您抽出宝贵时间填写此表单。您提供的信息将帮助我们更好地了解您的需求，为您提供更优质的服务。所有信息将严格保密。</p>
+      <p class="text-gray-600 mt-2">Thank you for taking the time to complete this form. The information you provide will help us better understand your needs and provide you with better service. All information will be kept strictly confidential.</p>
+      <div class="section-divider mx-auto"></div>
+    </div>
+
+    <!-- 评分卡片 - 客户可见的匹配度指示 -->
+    <div class="form-section">
+      <div class="flex flex-col md:flex-row justify-between items-center">
+        <div>
+          <h2 class="text-xl font-semibold text-gray-700 flex items-center">
+            <i class="fas fa-handshake text-yellow-500 mr-2"></i>合作匹配度
+          </h2>
+          <p class="text-gray-500 text-sm">基于您的信息自动计算</p>
+        </div>
+        <div class="mt-4 md:mt-0 flex flex-col items-center md:items-end">
+          <div class="text-4xl font-bold text-primary" id="matchScore">0%</div>
+          <div class="text-sm text-gray-500" id="matchDescription">请完成下方信息</div>
+        </div>
+      </div>
+      
+      <!-- 雷达图容器 -->
+      <div class="mt-6">
+        <h3 class="text-sm font-medium text-gray-600 mb-3">各维度匹配度分析 / Matching Degree Analysis</h3>
+        <div class="h-64 md:h-80">
+          <canvas id="radarChart"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- 表单容器 -->
+    <form id="clientForm" class="space-y-6">
+      <!-- 表单提交说明 - 邮件方式 -->
+      <div class="bg-blue-50 p-4 rounded-lg text-sm text-blue-800 mb-6 border-l-4 border-primary">
+        <i class="fas fa-envelope mr-2"></i>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+          <span>本表单将通过邮件提交，提交后您将收到确认信息。</span>
+          <span>This form will be submitted via email, and you will receive confirmation after submission.</span>
+        </div>
+      </div>
+      
+      <!-- 基本信息部分 -->
+      <div class="form-section">
+        <h2 class="text-xl font-semibold mb-4 text-gray-700 flex items-center">
+          <i class="fas fa-info-circle text-primary mr-2"></i>公司基本信息 / Company Information
+        </h2>
+        <div class="section-divider"></div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <label for="company_name" class="block text-sm font-medium text-gray-700 mb-1">公司名称 / Company Name <span class="text-red-500">*</span></label>
+            <input type="text" id="company_name" name="【公司名称】" required
+              class="w-full px-4 py-2 border border-gray-300 rounded-lg form-input-focus form-transition"
+              placeholder="请输入公司名称">
+          </div>
+          
+          <div>
+            <label for="industry" class="block text-sm font-medium text-gray-700 mb-1">所属行业 / Industry <span class="text-red-500">*</span></label>
+            <input type="text" id="industry" name="【所属行业】" required
+              class="w-full px-4 py-2 border border-gray-300 rounded-lg form-input-focus form-transition"
+              placeholder="请输入所属行业">
+          </div>
+          
+          <div>
+            <label for="country" class="block text-sm font-medium text-gray-700 mb-1">所在国家 / Country <span class="text-red-500">*</span></label>
+            <select id="country" name="【所在国家】" required
+              class="w-full px-4 py-2 border border-gray-300 rounded-lg form-input-focus form-transition appearance-none bg-white bg-[url('data:image/svg+xml;charset=US-ASCII,<svg width=\"20\" height=\"20\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M7 10l5 5 5-5H7z\" fill=\"%23333\"/></svg>')] bg-no-repeat bg-right px-4 pr-8">
+              <option value="">请选择国家 / Select Country</option>
+              <option value="Egypt">埃及 / Egypt</option>
+              <option value="India">印度 / India</option>
+              <option value="Brazil">巴西 / Brazil</option>
+              <option value="China">中国 / China</option>
+              <option value="Other">其他 / Other</option>
+            </select>
+          </div>
+          
+          <div>
+            <label for="business_type" class="block text-sm font-medium text-gray-700 mb-1">公司类型 / Business Type <span class="text-red-500">*</span></label>
+            <select id="business_type" name="【公司类型】" required
+              class="w-full px-4 py-2 border border-gray-300 rounded-lg form-input-focus form-transition appearance-none bg-white bg-[url('data:image/svg+xml;charset=US-ASCII,<svg width=\"20\" height=\"20\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M7 10l5 5 5-5H7z\" fill=\"%23333\"/></svg>')] bg-no-repeat bg-right px-4 pr-8">
+              <option value="">请选择类型 / Select Type</option>
+              <option value="Distributor">分销商 / Distributor</option>
+              <option value="Project Integrator">项目集成商 / Project Integrator</option>
+              <option value="OEM Manufacturer">OEM制造商 / OEM Manufacturer</option>
+              <option value="Retailer">零售商 / Retailer</option>
+              <option value="Service Provider">服务提供商 / Service Provider</option>
+            </select>
+          </div>
+          
+          <div>
+            <label for="contact_person" class="block text-sm font-medium text-gray-700 mb-1">联系人 / Contact Person <span class="text-red-500">*</span></label>
+            <input type="text" id="contact_person" name="【联系人】" required
+              class="w-full px-4 py-2 border border-gray-300 rounded-lg form-input-focus form-transition"
+              placeholder="请输入联系人姓名">
+          </div>
+          
+          <div>
+            <label for="contact_email" class="block text-sm font-medium text-gray-700 mb-1">联系邮箱 / Contact Email <span class="text-red-500">*</span></label>
+            <input type="email" id="contact_email" name="【联系邮箱】" required
+              class="w-full px-4 py-2 border border-gray-300 rounded-lg form-input-focus form-transition"
+              placeholder="请输入常用邮箱（用于接收确认信息）">
+            
+            <!-- 邮箱重要提示 -->
+            <div class="email-required-alert">
+              <i class="fas fa-exclamation-circle mr-1"></i>
+              <strong>重要提示：</strong>请使用您的常用邮箱，这将用于发送表单信息和接收我们的回复。若邮箱无效，将导致提交失败。
+            </div>
+            <div class="email-required-alert">
+              <i class="fas fa-exclamation-circle mr-1"></i>
+              <strong>Important:</strong> Please use your regular email address, which will be used to send form information and receive our replies. An invalid email will result in submission failure.
+            </div>
+          </div>
+          
+          <div>
+            <label for="contact_phone" class="block text-sm font-medium text-gray-700 mb-1">联系电话 / Contact Phone</label>
+            <input type="tel" id="contact_phone" name="【联系电话】"
+              class="w-full px-4 py-2 border border-gray-300 rounded-lg form-input-focus form-transition"
+              placeholder="请输入联系电话">
+          </div>
+        </div>
+      </div>
+      
+      <!-- 产品需求部分 -->
+      <div class="form-section">
+        <h2 class="text-xl font-semibold mb-4 text-gray-700 flex items-center">
+          <i class="fas fa-box text-primary mr-2"></i>产品需求信息 / Product Requirements
+        </h2>
+        <div class="section-divider"></div>
+        
+        <!-- 选型辅助网站链接 -->
+        <div class="mb-6 p-4 bg-blue-50 rounded-lg border border-blue-100">
+          <div class="flex items-start">
+            <i class="fas fa-lightbulb text-yellow-500 mt-1 mr-3 text-lg"></i>
+            <div>
+              <p class="text-gray-800 font-medium mb-1">需要帮助选择合适的产品？</p>
+              <p class="text-gray-600 mb-2">Not sure which product is right for you?</p>
+              <a href="http://pt.portal.dqy001.com/?id=rm01&lan=en-us" target="_blank" class="link-button">
+                <span>访问我们的选型辅助网站</span>
+                <i class="fas fa-external-link-alt ml-1 text-sm"></i>
+              </a>
+              <span class="text-gray-600 ml-2">/ Visit our product selection assistant</span>
+            </div>
+          </div>
+        </div>
+        
+        <div class="mb-6 p-4 bg-neutral-dark rounded-lg">
+          <label class="block text-sm font-medium text-gray-700 mb-2">是否有具体产品需求 / Have Specific Product Requirements <span class="text-red-500">*</span></label>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <label class="relative">
+              <input type="radio" name="【是否有产品需求】" value="Yes" class="sr-only peer" required id="has_product_yes" onchange="toggleProductFields(true)">
+              <div class="bg-white border-2 border-gray-300 rounded-lg p-3 text-center cursor-pointer peer-checked:border-primary peer-checked:bg-primary/10 form-transition">
+                <div class="font-medium">有 / Yes</div>
+                <div class="text-xs text-gray-500 mt-1">我有具体的产品需求</div>
+              </div>
+            </label>
+            
+            <label class="relative">
+              <input type="radio" name="【是否有产品需求】" value="No" class="sr-only peer" id="has_product_no" onchange="toggleProductFields(false)">
+              <div class="bg-white border-2 border-gray-300 rounded-lg p-3 text-center cursor-pointer peer-checked:border-primary peer-checked:bg-primary/10 form-transition">
+                <div class="font-medium">无 / No</div>
+                <div class="text-xs text-gray-500 mt-1">目前没有具体需求</div>
+              </div>
+            </label>
+          </div>
+        </div>
+        
+        <div id="product_fields" class="grid grid-cols-1 md:grid-cols-2 gap-6 opacity-50 pointer-events-none form-transition">
+          <div>
+            <label for="product_name" class="block text-sm font-medium text-gray-700 mb-1">产品名称 / Product Name</label>
+            <input type="text" id="product_name" name="【产品名称】"
+              class="w-full px-4 py-2 border border-gray-300 rounded-lg form-input-focus form-transition"
+              placeholder="请输入产品名称">
+          </div>
+          
+          <div>
+            <label for="product_model" class="block text-sm font-medium text-gray-700 mb-1">产品型号 / Product Model</label>
+            <input type="text" id="product_model" name="【产品型号】"
+              class="w-full px-4 py-2 border border-gray-300 rounded-lg form-input-focus form-transition"
+              placeholder="请输入产品型号">
+          </div>
+          
+          <div>
+            <label for="product_specs" class="block text-sm font-medium text-gray-700 mb-1">产品规格 / Specifications</label>
+            <input type="text" id="product_specs" name="【产品规格】"
+              class="w-full px-4 py-2 border border-gray-300 rounded-lg form-input-focus form-transition"
+              placeholder="请输入产品规格">
+          </div>
+          
+          <div>
+            <label for="product_quantity" class="block text-sm font-medium text-gray-700 mb-1">需求数量 / Quantity</label>
+            <input type="number" id="product_quantity" name="【需求数量】" min="1"
+              class="w-full px-4 py-2 border border-gray-300 rounded-lg form-input-focus form-transition"
+              placeholder="请输入需求数量">
+          </div>
+          
+          <div class="md:col-span-2">
+            <label for="product_requirements" class="block text-sm font-medium text-gray-700 mb-1">其他具体要求 / Other Specific Requirements</label>
+            <textarea id="product_requirements" name="【其他产品要求】" rows="3" 
+              class="w-full px-4 py-2 border border-gray-300 rounded-lg form-input-focus form-transition"
+              placeholder="请详细描述其他产品要求..."></textarea>
+          </div>
+        </div>
+      </div>
+      
+      <!-- 业务需求部分 -->
+      <div class="form-section">
+        <h2 class="text-xl font-semibold mb-4 text-gray-700 flex items-center">
+          <i class="fas fa-briefcase text-primary mr-2"></i>业务需求信息 / Business Requirements
+        </h2>
+        <div class="section-divider"></div>
+        
+        <!-- 员工数量 -->
+        <div class="mb-6 p-4 bg-neutral-dark rounded-lg">
+          <label class="block text-sm font-medium text-gray-700 mb-2">公司员工数量 / Number of Employees <span class="text-red-500">*</span></label>
+          <div class="grid grid-cols-1 sm:grid-cols-3 md:grid-cols-5 gap-2">
+            <label class="relative">
+              <input type="radio" name="【公司员工数量】" value="<50" class="sr-only peer" required onchange="calculateMatchScore()">
+              <div class="bg-white border-2 border-gray-300 rounded-lg p-3 text-center cursor-pointer peer-checked:border-primary peer-checked:bg-primary/10 form-transition">
+                <div class="font-medium">&lt;50</div>
+                <div class="text-xs text-gray-500 mt-1">少于50人</div>
+              </div>
+            </label>
+            
+            <label class="relative">
+              <input type="radio" name="【公司员工数量】" value="50–100" class="sr-only peer" onchange="calculateMatchScore()">
+              <div class="bg-white border-2 border-gray-300 rounded-lg p-3 text-center cursor-pointer peer-checked:border-primary peer-checked:bg-primary/10 form-transition">
+                <div class="font-medium">50–100</div>
+                <div class="text-xs text-gray-500 mt-1">50-100人</div>
+              </div>
+            </label>
+            
+            <label class="relative">
+              <input type="radio" name="【公司员工数量】" value="100–300" class="sr-only peer" onchange="calculateMatchScore()">
+              <div class="bg-white border-2 border-gray-300 rounded-lg p-3 text-center cursor-pointer peer-checked:border-primary peer-checked:bg-primary/10 form-transition">
+                <div class="font-medium">100–300</div>
+                <div class="text-xs text-gray-500 mt-1">100-300人</div>
+              </div>
+            </label>
+            
+            <label class="relative">
+              <input type="radio" name="【公司员工数量】" value="300–1000" class="sr-only peer" onchange="calculateMatchScore()">
+              <div class="bg-white border-2 border-gray-300 rounded-lg p-3 text-center cursor-pointer peer-checked:border-primary peer-checked:bg-primary/10 form-transition">
+                <div class="font-medium">300–1000</div>
+                <div class="text-xs text-gray-500 mt-1">300-1000人</div>
+              </div>
+            </label>
+            
+            <label class="relative">
+              <input type="radio" name="【公司员工数量】" value=">1000" class="sr-only peer" onchange="calculateMatchScore()">
+              <div class="bg-white border-2 border-gray-300 rounded-lg p-3 text-center cursor-pointer peer-checked:border-primary peer-checked:bg-primary/10 form-transition">
+                <div class="font-medium">&gt;1000</div>
+                <div class="text-xs text-gray-500 mt-1">多于1000人</div>
+              </div>
+            </label>
+          </div>
+        </div>
+        
+        <!-- OEM需求 -->
+        <div class="mb-6 p-4 bg-neutral-dark rounded-lg">
+          <label class="block text-sm font-medium text-gray-700 mb-2">是否有OEM需求 / OEM Requirements <span class="text-red-500">*</span></label>
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
+            <label class="relative">
+              <input type="radio" name="【OEM需求】" value="No" class="sr-only peer" required onchange="calculateMatchScore()">
+              <div class="bg-white border-2 border-gray-300 rounded-lg p-3 text-center cursor-pointer peer-checked:border-primary peer-checked:bg-primary/10 form-transition">
+                <div class="font-medium">No</div>
+                <div class="text-xs text-gray-500 mt-1">无需求</div>
+              </div>
+            </label>
+            
+            <label class="relative">
+              <input type="radio" name="【OEM需求】" value="Unclear" class="sr-only peer" onchange="calculateMatchScore()">
+              <div class="bg-white border-2 border-gray-300 rounded-lg p-3 text-center cursor-pointer peer-checked:border-primary peer-checked:bg-primary/10 form-transition">
+                <div class="font-medium">Unclear</div>
+                <div class="text-xs text-gray-500 mt-1">不明确</div>
+              </div>
+            </label>
+            
+            <label class="relative">
+              <input type="radio" name="【OEM需求】" value="Yes" class="sr-only peer" onchange="calculateMatchScore()">
+              <div class="bg-white border-2 border-gray-300 rounded-lg p-3 text-center cursor-pointer peer-checked:border-primary peer-checked:bg-primary/10 form-transition">
+                <div class="font-medium">Yes</div>
+                <div class="text-xs text-gray-500 mt-1">有明确需求</div>
+              </div>
+            </label>
+          </div>
+        </div>
+        
+        <!-- 技术能力 -->
+        <div class="mb-6 p-4 bg-neutral-dark rounded-lg">
+          <label class="block text-sm font-medium text-gray-700 mb-2">公司技术能力 / Technical Capability <span class="text-red-500">*</span></label>
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
+            <label class="relative">
+              <input type="radio" name="【技术能力】" value="None" class="sr-only peer" required onchange="calculateMatchScore()">
+              <div class="bg-white border-2 border-gray-300 rounded-lg p-3 text-center cursor-pointer peer-checked:border-primary peer-checked:bg-primary/10 form-transition">
+                <div class="font-medium">None</div>
+                <div class="text-xs text-gray-500 mt-1">无专业技术</div>
+              </div>
+            </label>
+            
+            <label class="relative">
+              <input type="radio" name="【技术能力】" value="Engineers" class="sr-only peer" onchange="calculateMatchScore()">
+              <div class="bg-white border-2 border-gray-300 rounded-lg p-3 text-center cursor-pointer peer-checked:border-primary peer-checked:bg-primary/10 form-transition">
+                <div class="font-medium">Engineers</div>
+                <div class="text-xs text-gray-500 mt-1">有专业工程师</div>
+              </div>
+            </label>
+            
+            <label class="relative">
+              <input type="radio" name="【技术能力】" value="R&D Team" class="sr-only peer" onchange="calculateMatchScore()">
+              <div class="bg-white border-2 border-gray-300 rounded-lg p-3 text-center cursor-pointer peer-checked:border-primary peer-checked:bg-primary/10 form-transition">
+                <div class="font-medium">R&D Team</div>
+                <div class="text-xs text-gray-500 mt-1">有研发团队</div>
+              </div>
+            </label>
+          </div>
+        </div>
+        
+        <!-- 认证要求 -->
+        <div class="mb-6 p-4 bg-neutral-dark rounded-lg">
+          <label class="block text-sm font-medium text-gray-700 mb-2">产品认证要求 / Certification Requirements <span class="text-red-500">*</span></label>
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
+            <label class="relative">
+              <input type="radio" name="【认证要求】" value="Not Required" class="sr-only peer" required onchange="calculateMatchScore()">
+              <div class="bg-white border-2 border-gray-300 rounded-lg p-3 text-center cursor-pointer peer-checked:border-primary peer-checked:bg-primary/10 form-transition">
+                <div class="font-medium">Not Required</div>
+                <div class="text-xs text-gray-500 mt-1">无特殊要求</div>
+              </div>
+            </label>
+            
+            <label class="relative">
+              <input type="radio" name="【认证要求】" value="Needs CE/ISO" class="sr-only peer" onchange="calculateMatchScore()">
+              <div class="bg-white border-2 border-gray-300 rounded-lg p-3 text-center cursor-pointer peer-checked:border-primary peer-checked:bg-primary/10 form-transition">
+                <div class="font-medium">Needs CE/ISO</div>
+                <div class="text-xs text-gray-500 mt-1">需要基础认证</div>
+              </div>
+            </label>
+            
+            <label class="relative">
+              <input type="radio" name="【认证要求】" value="Multinational" class="sr-only peer" onchange="calculateMatchScore()">
+              <div class="bg-white border-2 border-gray-300 rounded-lg p-3 text-center cursor-pointer peer-checked:border-primary peer-checked:bg-primary/10 form-transition">
+                <div class="font-medium">Multinational</div>
+                <div class="text-xs text-gray-500 mt-1">需要多国认证</div>
+              </div>
+            </label>
+          </div>
+        </div>
+        
+        <!-- 合作意向 -->
+        <div class="mb-6 p-4 bg-neutral-dark rounded-lg">
+          <label class="block text-sm font-medium text-gray-700 mb-2">合作意向 / Cooperation Intention <span class="text-red-500">*</span></label>
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
+            <label class="relative">
+              <input type="radio" name="【合作意向】" value="One-time" class="sr-only peer" required onchange="calculateMatchScore()">
+              <div class="bg-white border-2 border-gray-300 rounded-lg p-3 text-center cursor-pointer peer-checked:border-primary peer-checked:bg-primary/10 form-transition">
+                <div class="font-medium">One-time</div>
+                <div class="text-xs text-gray-500 mt-1">一次性合作</div>
+              </div>
+            </label>
+            
+            <label class="relative">
+              <input type="radio" name="【合作意向】" value="Trial" class="sr-only peer" onchange="calculateMatchScore()">
+              <div class="bg-white border-2 border-gray-300 rounded-lg p-3 text-center cursor-pointer peer-checked:border-primary peer-checked:bg-primary/10 form-transition">
+                <div class="font-medium">Trial</div>
+                <div class="text-xs text-gray-500 mt-1">试用合作</div>
+              </div>
+            </label>
+            
+            <label class="relative">
+              <input type="radio" name="【合作意向】" value="Long-term" class="sr-only peer" onchange="calculateMatchScore()">
+              <div class="bg-white border-2 border-gray-300 rounded-lg p-3 text-center cursor-pointer peer-checked:border-primary peer-checked:bg-primary/10 form-transition">
+                <div class="font-medium">Long-term</div>
+                <div class="text-xs text-gray-500 mt-1">长期合作</div>
+              </div>
+            </label>
+          </div>
+        </div>
+        
+        <!-- 采购频率预期 -->
+        <div class="mb-6 p-4 bg-neutral-dark rounded-lg">
+          <label class="block text-sm font-medium text-gray-700 mb-2">预期采购频率 / Expected Purchase Frequency <span class="text-red-500">*</span></label>
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
+            <label class="relative">
+              <input type="radio" name="【采购频率】" value="1/year" class="sr-only peer" required onchange="calculateMatchScore()">
+              <div class="bg-white border-2 border-gray-300 rounded-lg p-3 text-center cursor-pointer peer-checked:border-primary peer-checked:bg-primary/10 form-transition">
+                <div class="font-medium">1/year</div>
+                <div class="text-xs text-gray-500 mt-1">每年1次</div>
+              </div>
+            </label>
+            
+            <label class="relative">
+              <input type="radio" name="【采购频率】" value="2-3/year" class="sr-only peer" onchange="calculateMatchScore()">
+              <div class="bg-white border-2 border-gray-300 rounded-lg p-3 text-center cursor-pointer peer-checked:border-primary peer-checked:bg-primary/10 form-transition">
+                <div class="font-medium">2-3/year</div>
+                <div class="text-xs text-gray-500 mt-1">每年2-3次</div>
+              </div>
+            </label>
+            
+            <label class="relative">
+              <input type="radio" name="【采购频率】" value="4+/year" class="sr-only peer" onchange="calculateMatchScore()">
+              <div class="bg-white border-2 border-gray-300 rounded-lg p-3 text-center cursor-pointer peer-checked:border-primary peer-checked:bg-primary/10 form-transition">
+                <div class="font-medium">4+/year</div>
+                <div class="text-xs text-gray-500 mt-1">每年4次以上</div>
+              </div>
+            </label>
+          </div>
+        </div>
+        
+        <!-- 行业匹配度 - 客户自评 -->
+        <div class="mb-6 p-4 bg-neutral-dark rounded-lg">
+          <label class="block text-sm font-medium text-gray-700 mb-2">您认为与我们的行业匹配度 / Industry Match Assessment <span class="text-red-500">*</span></label>
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
+            <label class="relative">
+              <input type="radio" name="【行业匹配度】" value="Highly Compatible" class="sr-only peer" required onchange="calculateMatchScore()">
+              <div class="bg-white border-2 border-gray-300 rounded-lg p-3 text-center cursor-pointer peer-checked:border-primary peer-checked:bg-primary/10 form-transition">
+                <div class="font-medium">高度契合</div>
+                <div class="text-xs text-gray-500 mt-1">Highly Compatible</div>
+              </div>
+            </label>
+            
+            <label class="relative">
+              <input type="radio" name="【行业匹配度】" value="Partially Matched" class="sr-only peer" onchange="calculateMatchScore()">
+              <div class="bg-white border-2 border-gray-300 rounded-lg p-3 text-center cursor-pointer peer-checked:border-primary peer-checked:bg-primary/10 form-transition">
+                <div class="font-medium">部分匹配</div>
+                <div class="text-xs text-gray-500 mt-1">Partially Matched</div>
+              </div>
+            </label>
+            
+            <label class="relative">
+              <input type="radio" name="【行业匹配度】" value="Other Industries" class="sr-only peer" onchange="calculateMatchScore()">
+              <div class="bg-white border-2 border-gray-300 rounded-lg p-3 text-center cursor-pointer peer-checked:border-primary peer-checked:bg-primary/10 form-transition">
+                <div class="font-medium">其他行业</div>
+                <div class="text-xs text-gray-500 mt-1">Other Industries</div>
+              </div>
+            </label>
+          </div>
+        </div>
+      </div>
+      
+      <!-- 其他需求和备注 -->
+      <div class="form-section">
+        <h2 class="text-xl font-semibold mb-4 text-gray-700 flex items-center">
+          <i class="fas fa-comment text-primary mr-2"></i>其他信息 / Additional Information
+        </h2>
+        <div class="section-divider"></div>
+        
+        <div>
+          <label for="requirements" class="block text-sm font-medium text-gray-700 mb-1">具体需求和备注 / Specific Requirements and Notes</label>
+          <textarea id="requirements" name="【具体需求和备注】" rows="4" 
+            class="w-full px-4 py-2 border border-gray-300 rounded-lg form-input-focus form-transition"
+            placeholder="请详细描述您的需求或其他需要说明的事项..."></textarea>
+        </div>
+      </div>
+      
+      <!-- 隐藏字段用于传递评分结果 -->
+      <input type="hidden" name="【匹配度总分】" id="match_score">
+      <input type="hidden" name="【匹配度描述】" id="match_description">
+      <input type="hidden" name="【各维度评分数据】" id="radar_chart_data">
+      
+      <!-- 提交按钮 -->
+      <div class="pt-4 flex justify-center">
+        <button type="submit" class="bg-primary hover:bg-primary/90 text-white font-medium py-3 px-8 rounded-lg shadow-md hover:shadow-lg transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:ring-offset-2 flex items-center">
+          <i class="fas fa-paper-plane mr-2"></i> 发送邮件提交 / Submit via Email
+        </button>
+      </div>
+    </form>
+    
+    <!-- 提交成功提示 -->
+    <div id="successMessage" class="bg-white rounded-xl shadow-md p-6 mb-8 hidden">
+      <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+        <i class="fas fa-check text-2xl text-accent"></i>
+      </div>
+      <h3 class="text-xl font-bold text-gray-800 mb-2">邮件已准备就绪！</h3>
+      <p class="text-gray-600 mb-6">您的默认邮件客户端将打开一个包含所有信息的新邮件，请检查后发送。</p>
+      <p class="text-gray-600 mb-6">Your default email client will open a new email with all the information. Please review and send it.</p>
+      
+      <div class="bg-blue-50 p-4 rounded-lg text-sm text-blue-800 mb-6">
+        <i class="fas fa-info-circle mr-2"></i>
+        <span>如果您的邮件客户端没有自动打开，请检查浏览器设置或手动发送邮件至：<strong>jansy@cncele.com</strong></span>
+      </div>
+      
+      <!-- 提交的数据展示区域 -->
+      <div class="mt-8 mb-8">
+        <h4 class="text-lg font-semibold text-gray-700 mb-4">提交的信息 / Submitted Information</h4>
+        <div id="submittedData" class="data-grid"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // 存储各维度评分数据
+    let dimensionScores = {
+      employee: 0,
+      oem: 0,
+      tech: 0,
+      certification: 0,
+      cooperation: 0,
+      purchase: 0,
+      industry: 0
+    };
+    
+    // 雷达图实例
+    let radarChart = null;
+    
+    // 初始化雷达图
+    function initRadarChart() {
+      const ctx = document.getElementById('radarChart').getContext('2d');
+      
+      // 定义图表选项
+      const options = {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+          r: {
+            angleLines: {
+              display: true,
+              color: 'rgba(0, 0, 0, 0.1)'
+            },
+            suggestedMin: 0,
+            suggestedMax: 50,
+            ticks: {
+              stepSize: 10,
+              backdropColor: 'transparent'
+            }
+          }
+        },
+        plugins: {
+          legend: {
+            display: false
+          },
+          tooltip: {
+            callbacks: {
+              label: function(context) {
+                return `${context.dataset.label}: ${context.raw}`;
+              }
+            }
+          }
+        }
+      };
+      
+      // 初始数据
+      const initialData = {
+        labels: [
+          '公司规模',
+          'OEM需求',
+          '技术能力',
+          '认证要求',
+          '合作意向',
+          '采购频率',
+          '行业匹配'
+        ],
+        datasets: [{
+          label: '匹配度得分',
+          data: [0, 0, 0, 0, 0, 0, 0],
+          backgroundColor: 'rgba(0, 83, 156, 0.2)',
+          borderColor: 'rgba(0, 83, 156, 1)',
+          pointBackgroundColor: 'rgba(0, 83, 156, 1)',
+          pointBorderColor: '#fff',
+          pointHoverBackgroundColor: '#fff',
+          pointHoverBorderColor: 'rgba(0, 83, 156, 1)'
+        }]
+      };
+      
+      // 创建图表
+      radarChart = new Chart(ctx, {
+        type: 'radar',
+        data: initialData,
+        options: options
+      });
+    }
+    
+    // 更新雷达图数据
+    function updateRadarChart() {
+      if (!radarChart) {
+        initRadarChart();
+        return;
+      }
+      
+      // 更新数据集
+      radarChart.data.datasets[0].data = [
+        dimensionScores.employee,
+        dimensionScores.oem,
+        dimensionScores.tech,
+        dimensionScores.certification,
+        dimensionScores.cooperation,
+        dimensionScores.purchase,
+        dimensionScores.industry
+      ];
+      
+      // 重新绘制图表
+      radarChart.update();
+    }
+    
+    // 切换产品需求字段的可用性
+    function toggleProductFields(hasRequirements) {
+      const productFields = document.getElementById('product_fields');
+      if (hasRequirements) {
+        productFields.classList.remove('opacity-50', 'pointer-events-none');
+        productFields.classList.add('opacity-100', 'pointer-events-auto');
+      } else {
+        productFields.classList.add('opacity-50', 'pointer-events-none');
+        productFields.classList.remove('opacity-100', 'pointer-events-auto');
+      }
+    }
+    
+    // 计算匹配度得分并保存各维度数据
+    function calculateMatchScore() {
+      // 初始化各项得分
+      let score = 0;
+      
+      // 员工数量评分
+      const employeeSize = document.querySelector('input[name="【公司员工数量】"]:checked');
+      if (employeeSize) {
+        const empValue = employeeSize.value;
+        if (empValue === "<50") {
+          dimensionScores.employee = 10;
+        } else if (empValue === "50–100") {
+          dimensionScores.employee = 20;
+        } else if (empValue === "100–300") {
+          dimensionScores.employee = 30;
+        } else if (empValue === "300–1000") {
+          dimensionScores.employee = 40;
+        } else if (empValue === ">1000") {
+          dimensionScores.employee = 50;
+        }
+        score += dimensionScores.employee;
+      }
+      
+      // OEM需求评分
+      const oemNeed = document.querySelector('input[name="【OEM需求】"]:checked');
+      if (oemNeed) {
+        const oemValue = oemNeed.value;
+        if (oemValue === "No") {
+          dimensionScores.oem = 10;
+        } else if (oemValue === "Unclear") {
+          dimensionScores.oem = 30;
+        } else if (oemValue === "Yes") {
+          dimensionScores.oem = 50;
+        }
+        score += dimensionScores.oem;
+      }
+      
+      // 技术能力评分
+      const techCapability = document.querySelector('input[name="【技术能力】"]:checked');
+      if (techCapability) {
+        const techValue = techCapability.value;
+        if (techValue === "None") {
+          dimensionScores.tech = 10;
+        } else if (techValue === "Engineers") {
+          dimensionScores.tech = 30;
+        } else if (techValue === "R&D Team") {
+          dimensionScores.tech = 50;
+        }
+        score += dimensionScores.tech;
+      }
+      
+      // 认证要求评分
+      const certification = document.querySelector('input[name="【认证要求】"]:checked');
+      if (certification) {
+        const certValue = certification.value;
+        if (certValue === "Not Required") {
+          dimensionScores.certification = 10;
+        } else if (certValue === "Needs CE/ISO") {
+          dimensionScores.certification = 30;
+        } else if (certValue === "Multinational") {
+          dimensionScores.certification = 50;
+        }
+        score += dimensionScores.certification;
+      }
+      
+      // 合作意向评分
+      const cooperationIntent = document.querySelector('input[name="【合作意向】"]:checked');
+      if (cooperationIntent) {
+        const intentValue = cooperationIntent.value;
+        if (intentValue === "One-time") {
+          dimensionScores.cooperation = 10;
+        } else if (intentValue === "Trial") {
+          dimensionScores.cooperation = 30;
+        } else if (intentValue === "Long-term") {
+          dimensionScores.cooperation = 50;
+        }
+        score += dimensionScores.cooperation;
+      }
+      
+      // 采购频率评分
+      const purchaseFrequency = document.querySelector('input[name="【采购频率】"]:checked');
+      if (purchaseFrequency) {
+        const freqValue = purchaseFrequency.value;
+        if (freqValue === "1/year") {
+          dimensionScores.purchase = 10;
+        } else if (freqValue === "2-3/year") {
+          dimensionScores.purchase = 30;
+        } else if (freqValue === "4+/year") {
+          dimensionScores.purchase = 50;
+        }
+        score += dimensionScores.purchase;
+      }
+      
+      // 行业匹配度评分
+      const industryMatch = document.querySelector('input[name="【行业匹配度】"]:checked');
+      if (industryMatch) {
+        const matchValue = industryMatch.value;
+        if (matchValue === "Other Industries") {
+          dimensionScores.industry = 10;
+        } else if (matchValue === "Partially Matched") {
+          dimensionScores.industry = 30;
+        } else if (matchValue === "Highly Compatible") {
+          dimensionScores.industry = 50;
+        }
+        score += dimensionScores.industry;
+      }
+      
+      // 计算百分比（总分350分）
+      const matchPercentage = Math.round((score / 350) * 100);
+      
+      // 更新显示
+      const matchScoreElement = document.getElementById('matchScore');
+      const matchDescriptionElement = document.getElementById('matchDescription');
+      
+      matchScoreElement.textContent = `${matchPercentage}%`;
+      
+      // 设置匹配度描述
+      let description = '';
+      if (matchPercentage === 0) {
+        description = '请完成下方信息';
+      } else if (matchPercentage <= 30) {
+        description = '较低匹配度';
+      } else if (matchPercentage <= 70) {
+        description = '中等匹配度';
+      } else {
+        description = '高度匹配';
+      }
+      
+      matchDescriptionElement.textContent = description;
+      
+      // 更新隐藏字段
+      document.getElementById('match_score').value = `${matchPercentage}%`;
+      document.getElementById('match_description').value = description;
+      document.getElementById('radar_chart_data').value = JSON.stringify(dimensionScores);
+      
+      // 更新雷达图
+      updateRadarChart();
+      
+      return matchPercentage;
+    }
+    
+    // 显示提交的数据
+    function displaySubmittedData(formData) {
+      const dataContainer = document.getElementById('submittedData');
+      dataContainer.innerHTML = '';
+      
+      // 遍历表单数据并显示
+      formData.forEach((value, key) => {
+        // 跳过空值和特殊字段
+        if (value.trim() === '' || key === '【各维度评分数据】') return;
+        
+        const dataItem = document.createElement('div');
+        dataItem.className = 'data-item';
+        dataItem.innerHTML = `
+          <div class="font-medium text-gray-800">${key}</div>
+          <div class="text-gray-600">${value}</div>
+        `;
+        
+        dataContainer.appendChild(dataItem);
+      });
+    }
+    
+    // 生成邮件链接并打开邮件客户端
+    function sendFormByEmail(formData) {
+      // 收件人邮箱地址
+      const recipientEmail = 'jansy@cncele.com';
+      
+      // 邮件主题
+      const companyName = formData.get('【公司名称】') || '未知公司';
+      const subject = `CNC ELECTRIC 客户信息收集 - ${companyName} - ${new Date().toLocaleDateString()}`;
+      
+      // 构建邮件内容
+      let body = "CNC ELECTRIC 客户信息收集表如下：\n\n";
+      
+      // 添加表单数据到邮件内容
+      formData.forEach((value, key) => {
+        // 跳过空值和特殊字段
+        if (value.trim() === '' || key === '【各维度评分数据】') return;
+        body += `${key}: ${value}\n`;
+      });
+      
+      // 添加额外信息
+      body += "\n---\n此邮件由CNC ELECTRIC客户信息收集表单自动生成。";
+      
+      // 编码邮件主题和内容
+      const encodedSubject = encodeURIComponent(subject);
+      const encodedBody = encodeURIComponent(body);
+      
+      // 创建mailto链接
+      const mailtoLink = `mailto:${recipientEmail}?subject=${encodedSubject}&body=${encodedBody}`;
+      
+      // 打开邮件客户端
+      window.location.href = mailtoLink;
+      
+      return true;
+    }
+    
+    // 页面加载完成后初始化
+    window.addEventListener('DOMContentLoaded', function() {
+      // 初始化雷达图
+      initRadarChart();
+      
+      // 表单提交处理
+      document.getElementById('clientForm').addEventListener('submit', function(e) {
+        // 阻止默认表单提交行为
+        e.preventDefault();
+        
+        // 确保最后计算一次匹配度
+        calculateMatchScore();
+        
+        // 获取表单数据
+        const formData = new FormData(this);
+        
+        // 获取用户邮箱
+        const userEmail = formData.get('【联系邮箱】');
+        
+        // 验证邮箱格式
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(userEmail)) {
+          alert('请输入有效的邮箱地址，否则无法提交表单。\nPlease enter a valid email address to submit the form.');
+          document.getElementById('contact_email').focus();
+          return false;
+        }
+        
+        // 发送邮件
+        const emailSent = sendFormByEmail(formData);
+        
+        // 显示成功消息
+        if (emailSent) {
+          document.getElementById('successMessage').classList.remove('hidden');
+          
+          // 显示提交的数据
+          displaySubmittedData(formData);
+          
+          // 滚动到成功消息区域
+          document.getElementById('successMessage').scrollIntoView({
+            behavior: 'smooth'
+          });
+        }
+      });
+    });
+  </script>
+</body>
+</html>
+    
