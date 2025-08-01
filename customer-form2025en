@@ -1,0 +1,777 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Enhanced Customer Information Form | 增强版客户信息表单</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Font Awesome -->
+  <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+  
+  <!-- 配置Tailwind自定义颜色和字体 -->
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: '#165DFF',
+            secondary: '#36CFC9',
+            neutral: '#F5F7FA',
+            dark: '#1D2129',
+          },
+          fontFamily: {
+            inter: ['Inter', 'system-ui', 'sans-serif'],
+          },
+        },
+      }
+    }
+  </script>
+  
+  <style type="text/tailwindcss">
+    @layer utilities {
+      .form-input-focus {
+        @apply focus:border-primary focus:ring-2 focus:ring-primary/20 focus:outline-none;
+      }
+      .form-label {
+        @apply block text-sm font-medium text-gray-700 mb-1;
+      }
+      .form-input {
+        @apply w-full px-4 py-2 border border-gray-300 rounded-lg transition-all duration-200 form-input-focus;
+      }
+      .form-radio {
+        @apply w-4 h-4 text-primary border-gray-300 focus:ring-primary;
+      }
+      .form-checkbox {
+        @apply w-4 h-4 text-primary border-gray-300 rounded focus:ring-primary;
+      }
+      .fade-in {
+        animation: fadeIn 0.5s ease-in-out;
+      }
+      @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+      }
+    }
+  </style>
+</head>
+<body class="bg-gray-50 font-inter text-dark min-h-screen">
+  <div class="container mx-auto px-4 py-8 max-w-4xl">
+    <!-- 表单卡片 -->
+    <div class="bg-white rounded-xl shadow-lg overflow-hidden transform transition-all duration-300 hover:shadow-xl">
+      <!-- 表单标题区域 -->
+      <div class="bg-primary text-white p-6">
+        <h2 class="text-[clamp(1.5rem,3vw,2rem)] font-bold flex items-center">
+          <i class="fa fa-user-circle mr-3"></i>
+          Customer Information Form | 客户信息表单
+        </h2>
+        <p class="mt-2 opacity-90">Please fill in the following information | 请填写以下信息</p>
+        <!-- 日期显示 -->
+        <div class="mt-4 text-sm opacity-80">
+          <i class="fa fa-calendar mr-1"></i>
+          <span>Date | 日期:</span>
+          <span id="currentDate" class="ml-1"></span>
+        </div>
+      </div>
+      
+      <!-- 表单内容 -->
+      <form id="customerForm" class="p-6 space-y-6">
+        <!-- 隐藏的日期字段 -->
+        <input type="hidden" id="formDate" name="formDate">
+        
+        <!-- 公司基本信息 -->
+        <div class="border-b border-gray-200 pb-4">
+          <h3 class="text-lg font-semibold mb-4 flex items-center">
+            <i class="fa fa-building text-primary mr-2"></i>
+            Company Information | 公司信息
+          </h3>
+          
+          <!-- 公司名称 -->
+          <div class="form-group">
+            <label for="company" class="form-label">
+              Company Name | 公司名称:
+              <span class="text-red-500">*</span>
+            </label>
+            <input type="text" id="company" name="company" class="form-input" required
+                  placeholder="Enter company name | 输入公司名称">
+          </div>
+
+          <!-- 客户网站 -->
+          <div class="form-group">
+            <label for="website" class="form-label">
+              Company Website | 公司网站:
+            </label>
+            <input type="url" id="website" name="website" class="form-input"
+                  placeholder="https://example.com | 公司网址">
+          </div>
+
+          <!-- 国家/城市 - 国家改为手动输入 -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="form-group">
+              <label for="country" class="form-label">
+                Country | 国家:
+                <span class="text-red-500">*</span>
+              </label>
+              <input type="text" id="country" name="country" class="form-input" required
+                    placeholder="Enter country | 输入国家">
+            </div>
+            <div class="form-group">
+              <label for="city" class="form-label">
+                City | 城市:
+                <span class="text-red-500">*</span>
+              </label>
+              <input type="text" id="city" name="city" class="form-input" required
+                    placeholder="Enter city | 输入城市">
+            </div>
+          </div>
+
+          <!-- 成立年份 - 取消1900年限制 -->
+          <div class="form-group">
+            <label for="year" class="form-label">
+              Year Established | 成立年份:
+              <span class="text-red-500">*</span>
+            </label>
+            <input type="number" id="year" name="year" class="form-input" required
+                  min="0" max="2025" placeholder="Enter year | 输入年份">
+          </div>
+
+          <!-- 经营类型 -->
+          <div class="form-group">
+            <label for="type" class="form-label">
+              Business Type | 经营类型:
+              <span class="text-red-500">*</span>
+            </label>
+            <select id="type" name="type" class="form-input" required>
+              <option value="" disabled selected>Select business type | 选择经营类型</option>
+              <option value="production">Production | 生产</option>
+              <option value="distribution">Distribution | 分销</option>
+              <option value="project">Project | 项目</option>
+              <option value="panelFactory">Panel Factory | 盘厂</option>
+              <option value="retail">Retail | 零售</option>
+              <option value="service">Service | 服务</option>
+              <option value="other">Other | 其他</option>
+            </select>
+          </div>
+
+          <!-- 门店数量和上一年营业额 -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="form-group">
+              <label for="storeCount" class="form-label">
+                Number of Stores | 门店数量:
+                <span class="text-red-500">*</span>
+              </label>
+              <input type="number" id="storeCount" name="storeCount" class="form-input" required
+                    min="0" placeholder="Enter number of stores | 输入门店数量">
+            </div>
+            
+            <div class="form-group">
+              <label for="revenue" class="form-label">
+                Last Year's Revenue (in USD) | 上一年营业额 (美元):
+                <span class="text-red-500">*</span>
+              </label>
+              <input type="number" id="revenue" name="revenue" class="form-input" required
+                    min="0" step="any" placeholder="Enter revenue | 输入营业额">
+            </div>
+          </div>
+
+          <!-- 仓库及仓库面积 -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="form-group p-4 bg-neutral rounded-lg">
+              <label class="form-label block mb-3">
+                Does your company have a warehouse? | 公司是否有仓库？
+                <span class="text-red-500">*</span>
+              </label>
+              <div class="flex items-center space-x-6">
+                <label class="inline-flex items-center cursor-pointer">
+                  <input type="radio" name="hasWarehouse" value="yes" class="form-radio" required>
+                  <span class="ml-2">Yes 是</span>
+                </label>
+                <label class="inline-flex items-center cursor-pointer">
+                  <input type="radio" name="hasWarehouse" value="no" class="form-radio" required>
+                  <span class="ml-2">No 否</span>
+                </label>
+              </div>
+            </div>
+            
+            <div class="form-group" id="warehouseAreaGroup" style="display: none;">
+              <label for="warehouseArea" class="form-label">
+                Warehouse Area (sq.m) | 仓库面积 (平方米):
+              </label>
+              <input type="number" id="warehouseArea" name="warehouseArea" class="form-input"
+                    min="0" placeholder="Enter area | 输入面积">
+            </div>
+          </div>
+
+          <!-- 目前宣传途径（多选） -->
+          <div class="form-group">
+            <label class="form-label block mb-3">
+              Current Promotion Channels | 目前宣传途径:
+            </label>
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2">
+              <label class="inline-flex items-center cursor-pointer">
+                <input type="checkbox" name="promotion" value="website" class="form-checkbox">
+                <span class="ml-2">Website | 官网</span>
+              </label>
+              <label class="inline-flex items-center cursor-pointer">
+                <input type="checkbox" name="promotion" value="social" class="form-checkbox">
+                <span class="ml-2">Social Media | 社交媒体</span>
+              </label>
+              <label class="inline-flex items-center cursor-pointer">
+                <input type="checkbox" name="promotion" value="exhibition" class="form-checkbox">
+                <span class="ml-2">Exhibitions | 展会</span>
+              </label>
+              <label class="inline-flex items-center cursor-pointer">
+                <input type="checkbox" name="promotion" value="agents" class="form-checkbox">
+                <span class="ml-2">Agents | 代理商</span>
+              </label>
+              <label class="inline-flex items-center cursor-pointer">
+                <input type="checkbox" name="promotion" value="ads" class="form-checkbox">
+                <span class="ml-2">Advertisements | 广告</span>
+              </label>
+              <label class="inline-flex items-center cursor-pointer">
+                <input type="checkbox" name="promotion" value="other" class="form-checkbox">
+                <span class="ml-2">Other | 其他</span>
+              </label>
+            </div>
+          </div>
+        </div>
+        
+        <!-- 联系人信息 -->
+        <div class="border-b border-gray-200 pb-4">
+          <h3 class="text-lg font-semibold mb-4 flex items-center">
+            <i class="fa fa-user text-primary mr-2"></i>
+            Contact Person | 联系人信息
+          </h3>
+          
+          <!-- 联系人 -->
+          <div class="form-group">
+            <label for="contactPerson" class="form-label">
+              Contact Person | 联系人:
+              <span class="text-red-500">*</span>
+            </label>
+            <input type="text" id="contactPerson" name="contactPerson" class="form-input" required
+                  placeholder="Enter contact person's name | 输入联系人姓名">
+          </div>
+
+          <!-- 职位 -->
+          <div class="form-group">
+            <label for="position" class="form-label">
+              Position | 职位:
+              <span class="text-red-500">*</span>
+            </label>
+            <input type="text" id="position" name="position" class="form-input" required
+                  placeholder="Enter position | 输入职位">
+          </div>
+
+          <!-- 联系邮箱和电话 -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="form-group">
+              <label for="email" class="form-label">
+                Contact Email | 联系邮箱:
+                <span class="text-red-500">*</span>
+              </label>
+              <input type="email" id="email" name="email" class="form-input" required
+                    placeholder="Enter email address | 输入邮箱地址">
+            </div>
+            <div class="form-group">
+              <label for="phone" class="form-label">
+                Phone Number | 电话号码:
+                <span class="text-red-500">*</span>
+              </label>
+              <input type="tel" id="phone" name="phone" class="form-input" required
+                    placeholder="Enter phone number | 输入电话号码">
+            </div>
+          </div>
+
+          <!-- 上传客户名片 -->
+          <div class="form-group">
+            <label for="businessCard" class="form-label">
+              Upload Business Card | 上传客户名片:
+            </label>
+            <input type="file" id="businessCard" name="businessCard" class="form-input p-1"
+                  accept="image/jpeg, image/png, application/pdf">
+            <p class="text-xs text-gray-500 mt-1">Accepted formats: JPG, PNG, PDF (Max 5MB) | 支持格式: JPG, PNG, PDF (最大5MB)</p>
+          </div>
+        </div>
+        
+        <!-- 业务信息 -->
+        <div class="border-b border-gray-200 pb-4">
+          <h3 class="text-lg font-semibold mb-4 flex items-center">
+            <i class="fa fa-handshake-o text-primary mr-2"></i>
+            Business Information | 业务信息
+          </h3>
+          
+          <!-- 销售电气产品 -->
+          <div class="form-group p-4 bg-neutral rounded-lg">
+            <label class="form-label block mb-3">
+              Do you sell electrical products? | 是否销售电气产品？
+              <span class="text-red-500">*</span>
+            </label>
+            <div class="flex items-center space-x-6">
+              <label class="inline-flex items-center cursor-pointer">
+                <input type="radio" name="sell" value="yes" class="form-radio" required>
+                <span class="ml-2">Yes 是</span>
+              </label>
+              <label class="inline-flex items-center cursor-pointer">
+                <input type="radio" name="sell" value="no" class="form-radio" required>
+                <span class="ml-2">No 否</span>
+              </label>
+            </div>
+          </div>
+
+          <!-- 提供安装或工程服务 -->
+          <div class="form-group p-4 bg-neutral rounded-lg">
+            <label class="form-label block mb-3">
+              Do you provide installation or engineering services? | 是否提供安装或工程服务？
+              <span class="text-red-500">*</span>
+            </label>
+            <div class="flex items-center space-x-6">
+              <label class="inline-flex items-center cursor-pointer">
+                <input type="radio" name="service" value="yes" class="form-radio" required>
+                <span class="ml-2">Yes 是</span>
+              </label>
+              <label class="inline-flex items-center cursor-pointer">
+                <input type="radio" name="service" value="no" class="form-radio" required>
+                <span class="ml-2">No 否</span>
+              </label>
+            </div>
+          </div>
+
+          <!-- 有意向代理CNC Electric产品 -->
+          <div class="form-group p-4 bg-neutral rounded-lg">
+            <label class="form-label block mb-3">
+              Are you interested in CNC Electric products? | 是否有意向代理 CNC Electric 产品？
+              <span class="text-red-500">*</span>
+            </label>
+            <div class="flex items-center space-x-6">
+              <label class="inline-flex items-center cursor-pointer">
+                <input type="radio" name="interest" value="yes" class="form-radio" required>
+                <span class="ml-2">Yes 是</span>
+              </label>
+              <label class="inline-flex items-center cursor-pointer">
+                <input type="radio" name="interest" value="no" class="form-radio" required>
+                <span class="ml-2">No 否</span>
+              </label>
+            </div>
+          </div>
+
+          <!-- 产品需求 -->
+          <div class="form-group">
+            <label for="product需求" class="form-label">
+              Product Requirements | 产品需求:
+            </label>
+            <p class="text-sm text-gray-600 mb-2">
+              Please check our product selection website for reference: 
+              <a href="http://pt.portal.dqy001.com/?id=rm01&lan=en-us" target="_blank" class="text-primary hover:underline">
+                CNC ELECTRIC Product Selection | CNC ELECTRIC 产品选型
+              </a>
+            </p>
+            <textarea id="product需求" name="product需求" rows="4" class="form-input"
+                    placeholder="Please describe your product requirements | 请描述您的产品需求"></textarea>
+          </div>
+        </div>
+
+        <!-- 提交按钮 -->
+        <div class="pt-4 flex flex-col sm:flex-row gap-4">
+          <button type="button" id="previewBtn" class="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-800 font-medium py-3 px-6 rounded-lg transition-all duration-200 flex items-center justify-center">
+            <i class="fa fa-eye mr-2"></i>
+            Preview | 预览
+          </button>
+          <button type="button" id="sendEmailBtn" class="flex-1 bg-primary hover:bg-primary/90 text-white font-medium py-3 px-6 rounded-lg transition-all duration-200 transform hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center">
+            <i class="fa fa-paper-plane mr-2"></i>
+            Send Email | 发送邮件
+          </button>
+        </div>
+      </form>
+    </div>
+    
+    <!-- 提交成功消息 (默认隐藏) -->
+    <div id="successMessage" class="mt-6 bg-green-50 border border-green-200 text-green-700 px-6 py-4 rounded-lg hidden fade-in">
+      <div class="flex items-start">
+        <i class="fa fa-check-circle text-green-500 text-xl mt-0.5 mr-3"></i>
+        <div>
+          <h3 class="font-medium">Email Opened Successfully | 邮件已成功打开</h3>
+          <p class="mt-1 text-sm">Your email client should have opened with the pre-filled information. | 您的邮件客户端应该已打开并包含预填信息。</p>
+        </div>
+      </div>
+    </div>
+    
+    <!-- 预览模态框 -->
+    <div id="previewModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden fade-in">
+      <div class="bg-white rounded-xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto">
+        <div class="p-6 border-b border-gray-200 flex justify-between items-center">
+          <h3 class="text-xl font-bold">Form Preview | 表单预览</h3>
+          <button id="closePreview" class="text-gray-500 hover:text-gray-700">
+            <i class="fa fa-times text-xl"></i>
+          </button>
+        </div>
+        <div id="previewContent" class="p-6">
+          <!-- 预览内容将在这里动态生成 -->
+        </div>
+        <div class="p-6 border-t border-gray-200 flex justify-end">
+          <button id="sendFromPreview" class="bg-primary hover:bg-primary/90 text-white font-medium py-2 px-6 rounded-lg transition-all duration-200">
+            <i class="fa fa-paper-plane mr-2"></i>
+            Send Email | 发送邮件
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // 设置当前日期
+    function setCurrentDate() {
+      const now = new Date();
+      // 格式化日期为 YYYY-MM-DD 格式
+      const year = now.getFullYear();
+      const month = String(now.getMonth() + 1).padStart(2, '0');
+      const day = String(now.getDate()).padStart(2, '0');
+      const formattedDate = `${year}-${month}-${day}`;
+      
+      // 显示日期
+      document.getElementById('currentDate').textContent = formattedDate;
+      // 设置隐藏字段的值
+      document.getElementById('formDate').value = formattedDate;
+    }
+    
+    // 仓库面积字段显示控制
+    function setupWarehouseAreaToggle() {
+      const warehouseRadios = document.querySelectorAll('input[name="hasWarehouse"]');
+      const warehouseAreaGroup = document.getElementById('warehouseAreaGroup');
+      
+      warehouseRadios.forEach(radio => {
+        radio.addEventListener('change', function() {
+          if (this.value === 'yes') {
+            warehouseAreaGroup.style.display = 'block';
+            // 添加淡入动画
+            setTimeout(() => {
+              warehouseAreaGroup.classList.add('fade-in');
+            }, 10);
+          } else {
+            warehouseAreaGroup.style.display = 'none';
+            warehouseAreaGroup.classList.remove('fade-in');
+          }
+        });
+      });
+    }
+    
+    // 生成表单预览
+    function generatePreview() {
+      const formData = new FormData(document.getElementById('customerForm'));
+      const previewContent = document.getElementById('previewContent');
+      let html = '';
+      
+      // 显示日期
+      html += `
+        <div class="mb-6 p-4 bg-neutral rounded-lg">
+          <span class="font-medium">Submission Date | 提交日期:</span>
+          <span class="ml-2">${formData.get('formDate')}</span>
+        </div>
+      `;
+      
+      // 公司信息部分
+      html += `
+        <div class="mb-6">
+          <h4 class="text-lg font-semibold mb-3 pb-1 border-b border-gray-200">Company Information | 公司信息</h4>
+          <table class="w-full">
+            <tr class="border-b border-gray-100">
+              <td class="py-2 w-1/3 font-medium">Company Name | 公司名称:</td>
+              <td class="py-2">${formData.get('company') || '-'}</td>
+            </tr>
+            <tr class="border-b border-gray-100">
+              <td class="py-2 font-medium">Company Website | 公司网站:</td>
+              <td class="py-2">${formData.get('website') || '-'}</td></td>
+            </tr>
+            <tr class="border-b border-gray-100">
+              <td class="py-2 font-medium">Country | 国家:</td>
+              <td class="py-2">${formData.get('country') || '-'}</td>
+            </tr>
+            <tr class="border-b border-gray-100">
+              <td class="py-2 font-medium">City | 城市:</td>
+              <td class="py-2">${formData.get('city') || '-'}</td>
+            </tr>
+            <tr class="border-b border-gray-100">
+              <td class="py-2 font-medium">Year Established | 成立年份:</td>
+              <td class="py-2">${formData.get('year') || '-'}</td>
+            </tr>
+            <tr class="border-b border-gray-100">
+              <td class="py-2 font-medium">Business Type | 经营类型:</td>
+              <td class="py-2">${getSelectText('type') || '-'}</td>
+            </tr>
+            <tr class="border-b border-gray-100">
+              <td class="py-2 font-medium">Number of Stores | 门店数量:</td>
+              <td class="py-2">${formData.get('storeCount') || '-'}</td>
+            </tr>
+            <tr class="border-b border-gray-100">
+              <td class="py-2 font-medium">Last Year's Revenue | 上一年营业额:</td>
+              <td class="py-2">${formData.get('revenue') ? '$' + formData.get('revenue') : '-'}</td>
+            </tr>
+            <tr class="border-b border-gray-100">
+              <td class="py-2 font-medium">Has Warehouse? | 是否有仓库:</td>
+              <td class="py-2">${formData.get('hasWarehouse') === 'yes' ? 'Yes 是' : 'No 否'}</td>
+            </tr>
+      `;
+      
+      if (formData.get('hasWarehouse') === 'yes') {
+        html += `
+            <tr class="border-b border-gray-100">
+              <td class="py-2 font-medium">Warehouse Area | 仓库面积:</td>
+              <td class="py-2">${formData.get('warehouseArea') || '-'} sq.m</td>
+            </tr>
+        `;
+      }
+      
+      // 宣传途径
+      const promotions = [];
+      formData.getAll('promotion').forEach(channel => {
+        const channelMap = {
+          'website': 'Website | 官网',
+          'social': 'Social Media | 社交媒体',
+          'exhibition': 'Exhibitions | 展会',
+          'agents': 'Agents | 代理商',
+          'ads': 'Advertisements | 广告',
+          'other': 'Other | 其他'
+        };
+        promotions.push(channelMap[channel] || channel);
+      });
+      
+      html += `
+            <tr class="border-b border-gray-100">
+              <td class="py-2 font-medium">Promotion Channels | 宣传途径:</td>
+              <td class="py-2">${promotions.length > 0 ? promotions.join(', ') : '-'}</td>
+            </tr>
+          </table>
+        </div>
+      `;
+      
+      // 联系人信息部分
+      html += `
+        <div class="mb-6">
+          <h4 class="text-lg font-semibold mb-3 pb-1 border-b border-gray-200">Contact Person | 联系人信息</h4>
+          <table class="w-full">
+            <tr class="border-b border-gray-100">
+              <td class="py-2 w-1/3 font-medium">Contact Person | 联系人:</td>
+              <td class="py-2">${formData.get('contactPerson') || '-'}</td>
+            </tr>
+            <tr class="border-b border-gray-100">
+              <td class="py-2 font-medium">Position | 职位:</td>
+              <td class="py-2">${formData.get('position') || '-'}</td>
+            </tr>
+            <tr class="border-b border-gray-100">
+              <td class="py-2 font-medium">Contact Email | 联系邮箱:</td>
+              <td class="py-2">${formData.get('email') || '-'}</td>
+            </tr>
+            <tr class="border-b border-gray-100">
+              <td class="py-2 font-medium">Phone Number | 电话号码:</td>
+              <td class="py-2">${formData.get('phone') || '-'}</td>
+            </tr>
+            
+            <tr class="border-b border-gray-100">
+              <td class="py-2 font-medium">Business Card | 客户名片:</td>
+              <td class="py-2">${document.getElementById('businessCard').files.length > 0 ? 'Uploaded | 已上传' : '-'}</td>
+            </tr>
+          </table>
+        </div>
+      `;
+      
+      // 业务信息部分
+      html += `
+        <div>
+          <h4 class="text-lg font-semibold mb-3 pb-1 border-b border-gray-200">Business Information | 业务信息</h4>
+          <table class="w-full">
+            <tr class="border-b border-gray-100">
+              <td class="py-2 w-1/3 font-medium">Sells electrical products? | 是否销售电气产品:</td>
+              <td class="py-2">${formData.get('sell') === 'yes' ? 'Yes 是' : 'No 否'}</td>
+            </tr>
+            <tr class="border-b border-gray-100">
+              <td class="py-2 font-medium">Provides installation services? | 是否提供安装服务:</td>
+              <td class="py-2">${formData.get('service') === 'yes' ? 'Yes 是' : 'No 否'}</td>
+            </tr>
+            <tr class="border-b border-gray-100">
+              <td class="py-2 font-medium">Interested in CNC products? | 有意向代理CNC产品:</td>
+              <td class="py-2">${formData.get('interest') === 'yes' ? 'Yes 是' : 'No 否'}</td>
+            </tr>
+            <tr>
+              <td class="py-2 font-medium">Product Requirements | 产品需求:</td>
+              <td class="py-2">${formData.get('product需求') || '-'}</td>
+            </tr>
+          </table>
+        </div>
+      `;
+      
+      previewContent.innerHTML = html;
+    }
+    
+    // 获取下拉框选中的文本
+    function getSelectText(id) {
+      const select = document.getElementById(id);
+      if (select.selectedIndex === -1) return '';
+      return select.options[select.selectedIndex].text;
+    }
+    
+    // 设置预览模态框
+    function setupPreviewModal() {
+      const previewBtn = document.getElementById('previewBtn');
+      const previewModal = document.getElementById('previewModal');
+      const closePreview = document.getElementById('closePreview');
+      
+      previewBtn.addEventListener('click', function() {
+        // 验证表单是否填写完整
+        const form = document.getElementById('customerForm');
+        if (!form.checkValidity()) {
+          // 触发浏览器默认验证提示
+          form.reportValidity();
+          return;
+        }
+        
+        generatePreview();
+        previewModal.classList.remove('hidden');
+        // 阻止页面滚动
+        document.body.style.overflow = 'hidden';
+      });
+      
+      closePreview.addEventListener('click', function() {
+        previewModal.classList.add('hidden');
+        // 恢复页面滚动
+        document.body.style.overflow = '';
+      });
+      
+      // 点击模态框外部关闭
+      previewModal.addEventListener('click', function(e) {
+        if (e.target === previewModal) {
+          previewModal.classList.add('hidden');
+          document.body.style.overflow = '';
+        }
+      });
+    }
+    
+    // 创建邮件内容并打开邮件客户端
+    function setupEmailSending() {
+      const sendEmailBtn = document.getElementById('sendEmailBtn');
+      const sendFromPreview = document.getElementById('sendFromPreview');
+      const successMessage = document.getElementById('successMessage');
+      const previewModal = document.getElementById('previewModal');
+      
+      // 发送邮件处理函数
+      function sendEmail() {
+        // 验证表单是否填写完整
+        const form = document.getElementById('customerForm');
+        if (!form.checkValidity()) {
+          form.reportValidity();
+          return;
+        }
+        
+        const formData = new FormData(form);
+        
+        // 构建邮件主题
+        const subject = `Customer Information - ${formData.get('company')} - ${formData.get('formDate')}`;
+        
+        // 构建邮件正文
+        let body = `Customer Information Form Submission\n`;
+        body += `========================================\n\n`;
+        
+        // 添加公司信息
+        body += `Company Information:\n`;
+        body += `Name: ${formData.get('company')}\n`;
+        body += `Website: ${formData.get('website') || 'N/A'}\n`;
+        body += `Country: ${formData.get('country')}\n`;
+        body += `City: ${formData.get('city')}\n`;
+        body += `Year Established: ${formData.get('year')}\n`;
+        body += `Business Type: ${getSelectText('type')}\n`;
+        body += `Number of Stores: ${formData.get('storeCount')}\n`;
+        body += `Last Year's Revenue: $${formData.get('revenue')}\n`;
+        body += `Has Warehouse: ${formData.get('hasWarehouse') === 'yes' ? 'Yes' : 'No'}\n`;
+        
+        if (formData.get('hasWarehouse') === 'yes') {
+          body += `Warehouse Area: ${formData.get('warehouseArea') || 'N/A'} sq.m\n`;
+        }
+        
+        // 宣传途径
+        const promotions = [];
+        formData.getAll('promotion').forEach(channel => {
+          const channelMap = {
+            'website': 'Website',
+            'social': 'Social Media',
+            'exhibition': 'Exhibitions',
+            'agents': 'Agents',
+            'ads': 'Advertisements',
+            'other': 'Other'
+          };
+          promotions.push(channelMap[channel] || channel);
+        });
+        body += `Promotion Channels: ${promotions.length > 0 ? promotions.join(', ') : 'N/A'}\n\n`;
+        
+        // 联系人信息
+        body += `Contact Person:\n`;
+        body += `Name: ${formData.get('contactPerson')}\n`;
+        body += `Position: ${formData.get('position')}\n`;
+        body += `Email: ${formData.get('email')}\n`;
+        body += `Phone: ${formData.get('phone')}\n\n`;
+        
+        // 业务信息
+        body += `Business Information:\n`;
+        body += `Sells electrical products: ${formData.get('sell') === 'yes' ? 'Yes' : 'No'}\n`;
+        body += `Provides installation services: ${formData.get('service') === 'yes' ? 'Yes' : 'No'}\n`;
+        body += `Interested in CNC products: ${formData.get('interest') === 'yes' ? 'Yes' : 'No'}\n`;
+        body += `Product Requirements: ${formData.get('product需求') || 'N/A'}\n\n`;
+        
+        body += `Submitted on: ${formData.get('formDate')}\n`;
+        
+        // 编码邮件主题和正文以便在URL中使用
+        const encodedSubject = encodeURIComponent(subject);
+        const encodedBody = encodeURIComponent(body);
+        
+        // 收件人邮箱地址 - 请根据实际需求修改
+        const toEmail = 'jansy@cncele.com';
+        
+        // 创建mailto链接
+        const mailtoLink = `mailto:${toEmail}?subject=${encodedSubject}&body=${encodedBody}`;
+        
+        // 打开邮件客户端
+        window.location.href = mailtoLink;
+        
+        // 显示成功消息
+        successMessage.classList.remove('hidden');
+        
+        // 5秒后隐藏成功消息
+        setTimeout(() => {
+          successMessage.classList.add('hidden');
+        }, 5000);
+      }
+      
+      // 绑定按钮事件
+      sendEmailBtn.addEventListener('click', sendEmail);
+      sendFromPreview.addEventListener('click', function() {
+        sendEmail();
+        previewModal.classList.add('hidden');
+        document.body.style.overflow = '';
+      });
+    }
+    
+    // 添加输入动画效果
+    function setupInputAnimations() {
+      const inputs = document.querySelectorAll('input, select, textarea');
+      inputs.forEach(input => {
+        input.addEventListener('focus', function() {
+          this.parentElement.classList.add('scale-[1.01]');
+          this.parentElement.style.transition = 'transform 0.2s ease';
+        });
+        
+        input.addEventListener('blur', function() {
+          this.parentElement.classList.remove('scale-[1.01]');
+        });
+      });
+    }
+    
+    // 页面加载完成后初始化
+    document.addEventListener('DOMContentLoaded', function() {
+      setCurrentDate();
+      setupWarehouseAreaToggle();
+      setupPreviewModal();
+      setupEmailSending();
+      setupInputAnimations();
+    });
+  </script>
+</body>
+</html>
+    
