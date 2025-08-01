@@ -1,0 +1,1011 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Customer Information Form | نموذج معلومات العميل | Форма сбора данных клиента</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Font Awesome -->
+  <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+  
+  <!-- 配置Tailwind自定义颜色和字体 -->
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: '#165DFF',
+            secondary: '#36CFC9',
+            neutral: '#F5F7FA',
+            dark: '#1D2129',
+          },
+          fontFamily: {
+            inter: ['Inter', 'system-ui', 'sans-serif'],
+            arabic: ['Arial', 'sans-serif'],
+            russian: ['Arial', 'sans-serif']
+          },
+        },
+      }
+    }
+  </script>
+  
+  <style type="text/tailwindcss">
+    @layer utilities {
+      .form-input-focus {
+        @apply focus:border-primary focus:ring-2 focus:ring-primary/20 focus:outline-none;
+      }
+      .form-label {
+        @apply block text-sm font-medium text-gray-700 mb-1;
+      }
+      .form-input {
+        @apply w-full px-4 py-2 border border-gray-300 rounded-lg transition-all duration-200 form-input-focus;
+      }
+      .form-radio {
+        @apply w-4 h-4 text-primary border-gray-300 focus:ring-primary;
+      }
+      .form-checkbox {
+        @apply w-4 h-4 text-primary border-gray-300 rounded focus:ring-primary;
+      }
+      .fade-in {
+        animation: fadeIn 0.5s ease-in-out;
+      }
+      .rtl {
+        direction: rtl;
+      }
+      .ltr {
+        direction: ltr;
+      }
+      @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+      }
+    }
+  </style>
+</head>
+<body class="bg-gray-50 font-inter text-dark min-h-screen transition-all duration-300">
+  <div class="container mx-auto px-4 py-8 max-w-4xl">
+    <!-- 语言切换按钮 - 新增俄语选项 -->
+    <div class="flex justify-end mb-4">
+      <button id="englishBtn" class="px-4 py-2 bg-primary text-white font-medium hover:bg-primary/90 transition-colors rounded-l-lg">
+        English
+      </button>
+      <button id="arabicBtn" class="px-4 py-2 bg-gray-200 text-gray-800 font-medium hover:bg-gray-300 transition-colors font-arabic">
+        العربية
+      </button>
+      <button id="russianBtn" class="px-4 py-2 bg-gray-200 text-gray-800 font-medium hover:bg-gray-300 transition-colors font-russian rounded-r-lg">
+        Русский
+      </button>
+    </div>
+    
+    <!-- 表单卡片 -->
+    <div class="bg-white rounded-xl shadow-lg overflow-hidden transform transition-all duration-300 hover:shadow-xl">
+      <!-- 表单标题区域 -->
+      <div class="bg-primary text-white p-6">
+        <h2 class="text-[clamp(1.5rem,3vw,2rem)] font-bold flex items-center">
+          <i class="fa fa-user-circle mr-3"></i>
+          <span class="english">Customer Information Form</span>
+          <span class="arabic hidden font-arabic">نموذج معلومات العميل</span>
+          <span class="russian hidden font-russian">Форма сбора данных клиента</span>
+        </h2>
+        <p class="mt-2 opacity-90">
+          <span class="english">Please fill in the following information</span>
+          <span class="arabic hidden font-arabic">يرجى ملء المعلومات التالية</span>
+          <span class="russian hidden font-russian">Пожалуйста, заполните следующую информацию</span>
+        </p>
+        <!-- 日期显示 -->
+        <div class="mt-4 text-sm opacity-80">
+          <i class="fa fa-calendar mr-1"></i>
+          <span class="english">Date:</span>
+          <span class="arabic hidden font-arabic">التاريخ:</span>
+          <span class="russian hidden font-russian">Дата:</span>
+          <span id="currentDate" class="ml-1"></span>
+        </div>
+      </div>
+      
+      <!-- 表单内容 -->
+      <form id="customerForm" class="p-6 space-y-6">
+        <!-- 隐藏的日期字段 -->
+        <input type="hidden" id="formDate" name="formDate">
+        
+        <!-- 公司基本信息 -->
+        <div class="border-b border-gray-200 pb-4">
+          <h3 class="text-lg font-semibold mb-4 flex items-center">
+            <i class="fa fa-building text-primary mr-2"></i>
+            <span class="english">Company Information</span>
+            <span class="arabic hidden font-arabic">معلومات الشركة</span>
+            <span class="russian hidden font-russian">Информация о компании</span>
+          </h3>
+          
+          <!-- 公司名称 -->
+          <div class="form-group">
+            <label for="company" class="form-label">
+              <span class="english">Company Name: <span class="text-red-500">*</span></span>
+              <span class="arabic hidden font-arabic">اسم الشركة: <span class="text-red-500">*</span></span>
+              <span class="russian hidden font-russian">Название компании: <span class="text-red-500">*</span></span>
+            </label>
+            <input type="text" id="company" name="company" class="form-input" required
+                  placeholder="Enter company name | أدخل اسم الشركة | Введите название компании">
+          </div>
+
+          <!-- 客户网站 -->
+          <div class="form-group">
+            <label for="website" class="form-label">
+              <span class="english">Company Website:</span>
+              <span class="arabic hidden font-arabic">موقع الشركة الإلكتروني:</span>
+              <span class="russian hidden font-russian">Веб-сайт компании:</span>
+            </label>
+            <input type="url" id="website" name="website" class="form-input"
+                  placeholder="https://example.com | https://مثال.com | https://пример.com">
+          </div>
+
+          <!-- 国家/城市 -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="form-group">
+              <label for="country" class="form-label">
+                <span class="english">Country: <span class="text-red-500">*</span></span>
+                <span class="arabic hidden font-arabic">البلد: <span class="text-red-500">*</span></span>
+                <span class="russian hidden font-russian">Страна: <span class="text-red-500">*</span></span>
+              </label>
+              <input type="text" id="country" name="country" class="form-input" required
+                    placeholder="Enter country | أدخل البلد | Введите страну">
+            </div>
+            <div class="form-group">
+              <label for="city" class="form-label">
+                <span class="english">City: <span class="text-red-500">*</span></span>
+                <span class="arabic hidden font-arabic">المدينة: <span class="text-red-500">*</span></span>
+                <span class="russian hidden font-russian">Город: <span class="text-red-500">*</span></span>
+              </label>
+              <input type="text" id="city" name="city" class="form-input" required
+                    placeholder="Enter city | أدخل المدينة | Введите город">
+            </div>
+          </div>
+
+          <!-- 成立年份 -->
+          <div class="form-group">
+            <label for="year" class="form-label">
+              <span class="english">Year Established: <span class="text-red-500">*</span></span>
+              <span class="arabic hidden font-arabic">سنة التأسيس: <span class="text-red-500">*</span></span>
+              <span class="russian hidden font-russian">Год основания: <span class="text-red-500">*</span></span>
+            </label>
+            <input type="number" id="year" name="year" class="form-input" required
+                  min="0" max="2025" placeholder="Enter year | أدخل السنة | Введите год">
+          </div>
+
+          <!-- 经营类型 -->
+          <div class="form-group">
+            <label for="type" class="form-label">
+              <span class="english">Business Type: <span class="text-red-500">*</span></span>
+              <span class="arabic hidden font-arabic">نوع العمل: <span class="text-red-500">*</span></span>
+              <span class="russian hidden font-russian">Тип бизнеса: <span class="text-red-500">*</span></span>
+            </label>
+            <select id="type" name="type" class="form-input" required>
+              <option value="" disabled selected>
+                <span class="english">Select business type</span>
+                <span class="arabic hidden font-arabic">اختر نوع العمل</span>
+                <span class="russian hidden font-russian">Выберите тип бизнеса</span>
+              </option>
+              <option value="production">
+                <span class="english">Production</span>
+                <span class="arabic hidden font-arabic">الإنتاج</span>
+                <span class="russian hidden font-russian">Производство</span>
+              </option>
+              <option value="distribution">
+                <span class="english">Distribution</span>
+                <span class="arabic hidden font-arabic">التوزيع</span>
+                <span class="russian hidden font-russian">Дистрибуция</span>
+              </option>
+              <option value="project">
+                <span class="english">Project</span>
+                <span class="arabic hidden font-arabic">المشروعات</span>
+                <span class="russian hidden font-russian">Проекты</span>
+              </option>
+              <option value="panelFactory">
+                <span class="english">Panel Factory</span>
+                <span class="arabic hidden font-arabic">مصنع الألواح</span>
+                <span class="russian hidden font-russian">Завод панелей</span>
+              </option>
+              <option value="retail">
+                <span class="english">Retail</span>
+                <span class="arabic hidden font-arabic">المتجر</span>
+                <span class="russian hidden font-russian">Розница</span>
+              </option>
+              <option value="service">
+                <span class="english">Service</span>
+                <span class="arabic hidden font-arabic">الخدمات</span>
+                <span class="russian hidden font-russian">Услуги</span>
+              </option>
+              <option value="other">
+                <span class="english">Other</span>
+                <span class="arabic hidden font-arabic">أخرى</span>
+                <span class="russian hidden font-russian">Другое</span>
+              </option>
+            </select>
+          </div>
+
+          <!-- 门店数量和上一年营业额 -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="form-group">
+              <label for="storeCount" class="form-label">
+                <span class="english">Number of Stores: <span class="text-red-500">*</span></span>
+                <span class="arabic hidden font-arabic">عدد المتاجر: <span class="text-red-500">*</span></span>
+                <span class="russian hidden font-russian">Количество магазинов: <span class="text-red-500">*</span></span>
+              </label>
+              <input type="number" id="storeCount" name="storeCount" class="form-input" required
+                    min="0" placeholder="Enter number of stores | أدخل عدد المتاجر | Введите количество магазинов">
+            </div>
+            
+            <div class="form-group">
+              <label for="revenue" class="form-label">
+                <span class="english">Last Year's Revenue (in USD): <span class="text-red-500">*</span></span>
+                <span class="arabic hidden font-arabic">إيرادات العام الماضي (بالدولار): <span class="text-red-500">*</span></span>
+                <span class="russian hidden font-russian">Доход за прошлый год (в USD): <span class="text-red-500">*</span></span>
+              </label>
+              <input type="number" id="revenue" name="revenue" class="form-input" required
+                    min="0" step="any" placeholder="Enter revenue | أدخل الإيرادات | Введите доход">
+            </div>
+          </div>
+
+          <!-- 仓库及仓库面积 -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="form-group p-4 bg-neutral rounded-lg">
+              <label class="form-label block mb-3">
+                <span class="english">Does your company have a warehouse? <span class="text-red-500">*</span></span>
+                <span class="arabic hidden font-arabic">هل للشركة مستودع؟ <span class="text-red-500">*</span></span>
+                <span class="russian hidden font-russian">У компании есть склад? <span class="text-red-500">*</span></span>
+              </label>
+              <div class="flex items-center space-x-6">
+                <label class="inline-flex items-center cursor-pointer">
+                  <input type="radio" name="hasWarehouse" value="yes" class="form-radio" required>
+                  <span class="ml-2 english">Yes</span>
+                  <span class="ml-2 arabic hidden font-arabic">نعم</span>
+                  <span class="ml-2 russian hidden font-russian">Да</span>
+                </label>
+                <label class="inline-flex items-center cursor-pointer">
+                  <input type="radio" name="hasWarehouse" value="no" class="form-radio" required>
+                  <span class="ml-2 english">No</span>
+                  <span class="ml-2 arabic hidden font-arabic">لا</span>
+                  <span class="ml-2 russian hidden font-russian">Нет</span>
+                </label>
+              </div>
+            </div>
+            
+            <div class="form-group" id="warehouseAreaGroup" style="display: none;">
+              <label for="warehouseArea" class="form-label">
+                <span class="english">Warehouse Area (sq.m):</span>
+                <span class="arabic hidden font-arabic">مساحة المستودع (متر مربع):</span>
+                <span class="russian hidden font-russian">Площадь склада (кв.м):</span>
+              </label>
+              <input type="number" id="warehouseArea" name="warehouseArea" class="form-input"
+                    min="0" placeholder="Enter area | أدخل المساحة | Введите площадь">
+            </div>
+          </div>
+
+          <!-- 目前宣传途径（多选） -->
+          <div class="form-group">
+            <label class="form-label block mb-3">
+              <span class="english">Current Promotion Channels:</span>
+              <span class="arabic hidden font-arabic">قنوات الترويج الحالية:</span>
+              <span class="russian hidden font-russian">Текущие каналы продвижения:</span>
+            </label>
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2">
+              <label class="inline-flex items-center cursor-pointer">
+                <input type="checkbox" name="promotion" value="website" class="form-checkbox">
+                <span class="ml-2 english">Website</span>
+                <span class="ml-2 arabic hidden font-arabic">الموقع الإلكتروني</span>
+                <span class="ml-2 russian hidden font-russian">Веб-сайт</span>
+              </label>
+              <label class="inline-flex items-center cursor-pointer">
+                <input type="checkbox" name="promotion" value="social" class="form-checkbox">
+                <span class="ml-2 english">Social Media</span>
+                <span class="ml-2 arabic hidden font-arabic">الوسائط الاجتماعية</span>
+                <span class="ml-2 russian hidden font-russian">Социальные сети</span>
+              </label>
+              <label class="inline-flex items-center cursor-pointer">
+                <input type="checkbox" name="promotion" value="exhibition" class="form-checkbox">
+                <span class="ml-2 english">Exhibitions</span>
+                <span class="ml-2 arabic hidden font-arabic">المعارض</span>
+                <span class="ml-2 russian hidden font-russian">Выставки</span>
+              </label>
+              <label class="inline-flex items-center cursor-pointer">
+                <input type="checkbox" name="promotion" value="agents" class="form-checkbox">
+                <span class="ml-2 english">Agents</span>
+                <span class="ml-2 arabic hidden font-arabic">الوكلاء</span>
+                <span class="ml-2 russian hidden font-russian">Агенты</span>
+              </label>
+              <label class="inline-flex items-center cursor-pointer">
+                <input type="checkbox" name="promotion" value="ads" class="form-checkbox">
+                <span class="ml-2 english">Advertisements</span>
+                <span class="ml-2 arabic hidden font-arabic">الإعلانات</span>
+                <span class="ml-2 russian hidden font-russian">Реклама</span>
+              </label>
+              <label class="inline-flex items-center cursor-pointer">
+                <input type="checkbox" name="promotion" value="other" class="form-checkbox">
+                <span class="ml-2 english">Other</span>
+                <span class="ml-2 arabic hidden font-arabic">أخرى</span>
+                <span class="ml-2 russian hidden font-russian">Другое</span>
+              </label>
+            </div>
+          </div>
+        </div>
+        
+        <!-- 联系人信息 -->
+        <div class="border-b border-gray-200 pb-4">
+          <h3 class="text-lg font-semibold mb-4 flex items-center">
+            <i class="fa fa-user text-primary mr-2"></i>
+            <span class="english">Contact Person</span>
+            <span class="arabic hidden font-arabic">بيانات الاتصال</span>
+            <span class="russian hidden font-russian">Контактное лицо</span>
+          </h3>
+          
+          <!-- 联系人 -->
+          <div class="form-group">
+            <label for="contactPerson" class="form-label">
+              <span class="english">Contact Person: <span class="text-red-500">*</span></span>
+              <span class="arabic hidden font-arabic">شخص الاتصال: <span class="text-red-500">*</span></span>
+              <span class="russian hidden font-russian">Контактное лицо: <span class="text-red-500">*</span></span>
+            </label>
+            <input type="text" id="contactPerson" name="contactPerson" class="form-input" required
+                  placeholder="Enter contact person's name | أدخل اسم الشخص الذي يمكن الاتصال به | Введите имя контактного лица">
+          </div>
+
+          <!-- 职位 -->
+          <div class="form-group">
+            <label for="position" class="form-label">
+              <span class="english">Position: <span class="text-red-500">*</span></span>
+              <span class="arabic hidden font-arabic">المنصب: <span class="text-red-500">*</span></span>
+              <span class="russian hidden font-russian">Должность: <span class="text-red-500">*</span></span>
+            </label>
+            <input type="text" id="position" name="position" class="form-input" required
+                  placeholder="Enter position | أدخل المنصب | Введите должность">
+          </div>
+
+          <!-- 联系邮箱和电话 -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="form-group">
+              <label for="email" class="form-label">
+                <span class="english">Contact Email: <span class="text-red-500">*</span></span>
+                <span class="arabic hidden font-arabic">البريد الإلكتروني للتواصل: <span class="text-red-500">*</span></span>
+                <span class="russian hidden font-russian">Контактный email: <span class="text-red-500">*</span></span>
+              </label>
+              <input type="email" id="email" name="email" class="form-input" required
+                    placeholder="Enter email address | أدخل عنوان البريد الإلكتروني | Введите email адрес">
+            </div>
+            <div class="form-group">
+              <label for="phone" class="form-label">
+                <span class="english">Phone Number: <span class="text-red-500">*</span></span>
+                <span class="arabic hidden font-arabic">رقم الهاتف: <span class="text-red-500">*</span></span>
+                <span class="russian hidden font-russian">Номер телефона: <span class="text-red-500">*</span></span>
+              </label>
+              <input type="tel" id="phone" name="phone" class="form-input" required
+                    placeholder="Enter phone number | أدخل رقم الهاتف | Введите номер телефона">
+            </div>
+          </div>
+
+          <!-- 上传客户名片 -->
+          <div class="form-group">
+            <label for="businessCard" class="form-label">
+              <span class="english">Upload Business Card:</span>
+              <span class="arabic hidden font-arabic">تحميل البطاقة العملية:</span>
+              <span class="russian hidden font-russian">Загрузить визитку:</span>
+            </label>
+            <input type="file" id="businessCard" name="businessCard" class="form-input p-1"
+                  accept="image/jpeg, image/png, application/pdf">
+            <p class="text-xs text-gray-500 mt-1">
+              <span class="english">Accepted formats: JPG, PNG, PDF (Max 5MB)</span>
+              <span class="arabic hidden font-arabic">التنسيقات المقبولة: JPG, PNG, PDF (أقصى 5MB)</span>
+              <span class="russian hidden font-russian">Принимаемые форматы: JPG, PNG, PDF (Макс 5MB)</span>
+            </p>
+          </div>
+        </div>
+        
+        <!-- 业务信息 -->
+        <div class="border-b border-gray-200 pb-4">
+          <h3 class="text-lg font-semibold mb-4 flex items-center">
+            <i class="fa fa-handshake-o text-primary mr-2"></i>
+            <span class="english">Business Information</span>
+            <span class="arabic hidden font-arabic">معلومات العمل</span>
+            <span class="russian hidden font-russian">Информация о бизнесе</span>
+          </h3>
+          
+          <!-- 销售电气产品 -->
+          <div class="form-group p-4 bg-neutral rounded-lg">
+            <label class="form-label block mb-3">
+              <span class="english">Do you sell electrical products? <span class="text-red-500">*</span></span>
+              <span class="arabic hidden font-arabic">هل تبيع المنتجات الكهربائية؟ <span class="text-red-500">*</span></span>
+              <span class="russian hidden font-russian">Продаете ли вы электротехнику? <span class="text-red-500">*</span></span>
+            </label>
+            <div class="flex items-center space-x-6">
+              <label class="inline-flex items-center cursor-pointer">
+                <input type="radio" name="sell" value="yes" class="form-radio" required>
+                <span class="ml-2 english">Yes</span>
+                <span class="ml-2 arabic hidden font-arabic">نعم</span>
+                <span class="ml-2 russian hidden font-russian">Да</span>
+              </label>
+              <label class="inline-flex items-center cursor-pointer">
+                <input type="radio" name="sell" value="no" class="form-radio" required>
+                <span class="ml-2 english">No</span>
+                <span class="ml-2 arabic hidden font-arabic">لا</span>
+                <span class="ml-2 russian hidden font-russian">Нет</span>
+              </label>
+            </div>
+          </div>
+
+          <!-- 提供安装或工程服务 -->
+          <div class="form-group p-4 bg-neutral rounded-lg">
+            <label class="form-label block mb-3">
+              <span class="english">Do you provide installation or engineering services? <span class="text-red-500">*</span></span>
+              <span class="arabic hidden font-arabic">هل تقدم خدمات التثبيت أو الهندسة؟ <span class="text-red-500">*</span></span>
+              <span class="russian hidden font-russian">Предоставляете ли вы услуги по установке или инженерии? <span class="text-red-500">*</span></span>
+            </label>
+            <div class="flex items-center space-x-6">
+              <label class="inline-flex items-center cursor-pointer">
+                <input type="radio" name="service" value="yes" class="form-radio" required>
+                <span class="ml-2 english">Yes</span>
+                <span class="ml-2 arabic hidden font-arabic">نعم</span>
+                <span class="ml-2 russian hidden font-russian">Да</span>
+              </label>
+              <label class="inline-flex items-center cursor-pointer">
+                <input type="radio" name="service" value="no" class="form-radio" required>
+                <span class="ml-2 english">No</span>
+                <span class="ml-2 arabic hidden font-arabic">لا</span>
+                <span class="ml-2 russian hidden font-russian">Нет</span>
+              </label>
+            </div>
+          </div>
+
+          <!-- 有意向代理CNC Electric产品 -->
+          <div class="form-group p-4 bg-neutral rounded-lg">
+            <label class="form-label block mb-3">
+              <span class="english">Are you interested in CNC Electric products? <span class="text-red-500">*</span></span>
+              <span class="arabic hidden font-arabic">هل أنت مهتم بمنتجات CNC Electric؟ <span class="text-red-500">*</span></span>
+              <span class="russian hidden font-russian">Заинтересованы ли вы продуктами CNC Electric? <span class="text-red-500">*</span></span>
+            </label>
+            <div class="flex items-center space-x-6">
+              <label class="inline-flex items-center cursor-pointer">
+                <input type="radio" name="interest" value="yes" class="form-radio" required>
+                <span class="ml-2 english">Yes</span>
+                <span class="ml-2 arabic hidden font-arabic">نعم</span>
+                <span class="ml-2 russian hidden font-russian">Да</span>
+              </label>
+              <label class="inline-flex items-center cursor-pointer">
+                <input type="radio" name="interest" value="no" class="form-radio" required>
+                <span class="ml-2 english">No</span>
+                <span class="ml-2 arabic hidden font-arabic">لا</span>
+                <span class="ml-2 russian hidden font-russian">Нет</span>
+              </label>
+            </div>
+          </div>
+
+          <!-- 产品需求 -->
+          <div class="form-group">
+            <label for="product需求" class="form-label">
+              <span class="english">Product Requirements:</span>
+              <span class="arabic hidden font-arabic">متطلبات المنتج:</span>
+              <span class="russian hidden font-russian">Требования к продукту:</span>
+            </label>
+            <p class="text-sm text-gray-600 mb-2">
+              <span class="english">Please check our product selection website for reference: </span>
+              <span class="arabic hidden font-arabic">يرجى الاطلاع على موقعنا لاختيار المنتج كمرجع: </span>
+              <span class="russian hidden font-russian">Для справки ознакомьтесь с нашим сайтом выбора продукции: </span>
+              <a href="http://pt.portal.dqy001.com/?id=rm01&lan=en-us" target="_blank" class="text-primary hover:underline">
+                <span class="english">CNC ELECTRIC Product Selection</span>
+                <span class="arabic hidden font-arabic">اختيار منتجات CNC ELECTRIC</span>
+                <span class="russian hidden font-russian">Выбор продукции CNC ELECTRIC</span>
+              </a>
+            </p>
+            <textarea id="product需求" name="product需求" rows="4" class="form-input"
+                    placeholder="Please describe your product requirements | يرجى وصف متطلبات المنتج الخاصة بك | Опишите ваши требования к продукту"></textarea>
+          </div>
+        </div>
+
+        <!-- 提交按钮 -->
+        <div class="pt-4 flex flex-col sm:flex-row gap-4">
+          <button type="button" id="previewBtn" class="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-800 font-medium py-3 px-6 rounded-lg transition-all duration-200 flex items-center justify-center">
+            <i class="fa fa-eye mr-2"></i>
+            <span class="english">Preview</span>
+            <span class="arabic hidden font-arabic">معاينة</span>
+            <span class="russian hidden font-russian">Предварительный просмотр</span>
+          </button>
+          <button type="button" id="sendEmailBtn" class="flex-1 bg-primary hover:bg-primary/90 text-white font-medium py-3 px-6 rounded-lg transition-all duration-200 transform hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center">
+            <i class="fa fa-paper-plane mr-2"></i>
+            <span class="english">Send Email</span>
+            <span class="arabic hidden font-arabic">إرسال البريد الإلكتروني</span>
+            <span class="russian hidden font-russian">Отправить по email</span>
+          </button>
+        </div>
+      </form>
+    </div>
+    
+    <!-- 提交成功消息 -->
+    <div id="successMessage" class="mt-6 bg-green-50 border border-green-200 text-green-700 px-6 py-4 rounded-lg hidden fade-in">
+      <div class="flex items-start">
+        <i class="fa fa-check-circle text-green-500 text-xl mt-0.5 mr-3"></i>
+        <div>
+          <h3 class="font-medium">
+            <span class="english">Email Opened Successfully</span>
+            <span class="arabic hidden font-arabic">تم فتح البريد الإلكتروني بنجاح</span>
+            <span class="russian hidden font-russian">Email открыт успешно</span>
+          </h3>
+          <p class="mt-1 text-sm">
+            <span class="english">Your email client should have opened with the pre-filled information.</span>
+            <span class="arabic hidden font-arabic">يجب أن يكون عميل البريد الإلكتروني الخاص بك مفتوحًا مع المعلومات المُعبأة مسبقًا.</span>
+            <span class="russian hidden font-russian">Ваш почтовый клиент должен открыться с предварительно заполненной информацией.</span>
+          </p>
+        </div>
+      </div>
+    </div>
+    
+    <!-- 预览模态框 -->
+    <div id="previewModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden fade-in">
+      <div class="bg-white rounded-xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto">
+        <div class="p-6 border-b border-gray-200 flex justify-between items-center">
+          <h3 class="text-xl font-bold">
+            <span class="english">Form Preview</span>
+            <span class="arabic hidden font-arabic">معاينة النموذج</span>
+            <span class="russian hidden font-russian">Предварительный просмотр формы</span>
+          </h3>
+          <button id="closePreview" class="text-gray-500 hover:text-gray-700">
+            <i class="fa fa-times text-xl"></i>
+          </button>
+        </div>
+        <div id="previewContent" class="p-6">
+          <!-- 预览内容将在这里动态生成 -->
+        </div>
+        <div class="p-6 border-t border-gray-200 flex justify-end">
+          <button id="sendFromPreview" class="bg-primary hover:bg-primary/90 text-white font-medium py-2 px-6 rounded-lg transition-all duration-200">
+            <i class="fa fa-paper-plane mr-2"></i>
+            <span class="english">Send Email</span>
+            <span class="arabic hidden font-arabic">إرسال البريد الإلكتروني</span>
+            <span class="russian hidden font-russian">Отправить по email</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // 当前语言设置 - 新增俄语支持
+    let currentLanguage = 'english';
+    
+    // 设置当前日期
+    function setCurrentDate() {
+      const now = new Date();
+      const year = now.getFullYear();
+      const month = String(now.getMonth() + 1).padStart(2, '0');
+      const day = String(now.getDate()).padStart(2, '0');
+      const formattedDate = `${year}-${month}-${day}`;
+      
+      document.getElementById('currentDate').textContent = formattedDate;
+      document.getElementById('formDate').value = formattedDate;
+    }
+    
+    // 切换语言 - 扩展支持俄语
+    function switchLanguage(lang) {
+      if (lang === currentLanguage) return;
+      
+      currentLanguage = lang;
+      const isArabic = lang === 'arabic';
+      const isRussian = lang === 'russian';
+      
+      // 显示对应语言的元素，隐藏其他语言的元素
+      document.querySelectorAll('.english').forEach(el => {
+        el.classList.toggle('hidden', isArabic || isRussian);
+      });
+      document.querySelectorAll('.arabic').forEach(el => {
+        el.classList.toggle('hidden', !isArabic);
+      });
+      document.querySelectorAll('.russian').forEach(el => {
+        el.classList.toggle('hidden', !isRussian);
+      });
+      
+      // 更改文本方向 - 俄语和英语一样是从左到右
+      document.documentElement.dir = isArabic ? 'rtl' : 'ltr';
+      
+      // 更新按钮样式
+      document.getElementById('englishBtn').classList.toggle('bg-primary', lang === 'english');
+      document.getElementById('englishBtn').classList.toggle('bg-gray-200', lang !== 'english');
+      document.getElementById('englishBtn').classList.toggle('text-white', lang === 'english');
+      document.getElementById('englishBtn').classList.toggle('text-gray-800', lang !== 'english');
+      
+      document.getElementById('arabicBtn').classList.toggle('bg-primary', lang === 'arabic');
+      document.getElementById('arabicBtn').classList.toggle('bg-gray-200', lang !== 'arabic');
+      document.getElementById('arabicBtn').classList.toggle('text-white', lang === 'arabic');
+      document.getElementById('arabicBtn').classList.toggle('text-gray-800', lang !== 'arabic');
+      
+      // 俄语按钮样式
+      document.getElementById('russianBtn').classList.toggle('bg-primary', lang === 'russian');
+      document.getElementById('russianBtn').classList.toggle('bg-gray-200', lang !== 'russian');
+      document.getElementById('russianBtn').classList.toggle('text-white', lang === 'russian');
+      document.getElementById('russianBtn').classList.toggle('text-gray-800', lang !== 'russian');
+      
+      // 如果预览框是打开的，更新预览内容
+      if (!document.getElementById('previewModal').classList.contains('hidden')) {
+        generatePreview();
+      }
+    }
+    
+    // 仓库面积字段显示控制
+    function setupWarehouseAreaToggle() {
+      const warehouseRadios = document.querySelectorAll('input[name="hasWarehouse"]');
+      const warehouseAreaGroup = document.getElementById('warehouseAreaGroup');
+      
+      warehouseRadios.forEach(radio => {
+        radio.addEventListener('change', function() {
+          if (this.value === 'yes') {
+            warehouseAreaGroup.style.display = 'block';
+            setTimeout(() => {
+              warehouseAreaGroup.classList.add('fade-in');
+            }, 10);
+          } else {
+            warehouseAreaGroup.style.display = 'none';
+            warehouseAreaGroup.classList.remove('fade-in');
+          }
+        });
+      });
+    }
+    
+    // 生成表单预览 - 增加俄语支持
+    function generatePreview() {
+      const formData = new FormData(document.getElementById('customerForm'));
+      const previewContent = document.getElementById('previewContent');
+      const isArabic = currentLanguage === 'arabic';
+      const isRussian = currentLanguage === 'russian';
+      
+      let html = '';
+      
+      // 显示日期
+      html += `
+        <div class="mb-6 p-4 bg-neutral rounded-lg">
+          <span class="font-medium ${isArabic ? 'arabic font-arabic' : isRussian ? 'russian font-russian' : 'english'}">
+            ${isArabic ? 'تاريخ التقديم:' : isRussian ? 'Дата отправки:' : 'Submission Date:'}
+          </span>
+          <span class="ml-2">${formData.get('formDate')}</span>
+        </div>
+      `;
+      
+      // 公司信息部分
+      html += `
+        <div class="mb-6">
+          <h4 class="text-lg font-semibold mb-3 pb-1 border-b border-gray-200 ${isArabic ? 'arabic font-arabic' : isRussian ? 'russian font-russian' : 'english'}">
+            ${isArabic ? 'معلومات الشركة' : isRussian ? 'Информация о компании' : 'Company Information'}
+          </h4>
+          <table class="w-full">
+            <tr class="border-b border-gray-100">
+              <td class="py-2 w-1/3 font-medium ${isArabic ? 'arabic font-arabic' : isRussian ? 'russian font-russian' : 'english'}">${isArabic ? 'اسم الشركة:' : isRussian ? 'Название компании:' : 'Company Name:'}</td>
+              <td class="py-2">${formData.get('company') || '-'}</td>
+            </tr>
+            <tr class="border-b border-gray-100">
+              <td class="py-2 font-medium ${isArabic ? 'arabic font-arabic' : isRussian ? 'russian font-russian' : 'english'}">${isArabic ? 'موقع الشركة الإلكتروني:' : isRussian ? 'Веб-сайт компании:' : 'Company Website:'}</td>
+              <td class="py-2">${formData.get('website') || '-'}</td>
+            </tr>
+            <tr class="border-b border-gray-100">
+              <td class="py-2 font-medium ${isArabic ? 'arabic font-arabic' : isRussian ? 'russian font-russian' : 'english'}">${isArabic ? 'البلد:' : isRussian ? 'Страна:' : 'Country:'}</td>
+              <td class="py-2">${formData.get('country') || '-'}</td>
+            </tr>
+            <tr class="border-b border-gray-100">
+              <td class="py-2 font-medium ${isArabic ? 'arabic font-arabic' : isRussian ? 'russian font-russian' : 'english'}">${isArabic ? 'المدينة:' : isRussian ? 'Город:' : 'City:'}</td>
+              <td class="py-2">${formData.get('city') || '-'}</td>
+            </tr>
+            <tr class="border-b border-gray-100">
+              <td class="py-2 font-medium ${isArabic ? 'arabic font-arabic' : isRussian ? 'russian font-russian' : 'english'}">${isArabic ? 'سنة التأسيس:' : isRussian ? 'Год основания:' : 'Year Established:'}</td>
+              <td class="py-2">${formData.get('year') || '-'}</td>
+            </tr>
+            <tr class="border-b border-gray-100">
+              <td class="py-2 font-medium ${isArabic ? 'arabic font-arabic' : isRussian ? 'russian font-russian' : 'english'}">${isArabic ? 'نوع العمل:' : isRussian ? 'Тип бизнеса:' : 'Business Type:'}</td>
+              <td class="py-2">${getSelectText('type', isArabic, isRussian) || '-'}</td>
+            </tr>
+            <tr class="border-b border-gray-100">
+              <td class="py-2 font-medium ${isArabic ? 'arabic font-arabic' : isRussian ? 'russian font-russian' : 'english'}">${isArabic ? 'عدد المتاجر:' : isRussian ? 'Количество магазинов:' : 'Number of Stores:'}</td>
+              <td class="py-2">${formData.get('storeCount') || '-'}</td>
+            </tr>
+            <tr class="border-b border-gray-100">
+              <td class="py-2 font-medium ${isArabic ? 'arabic font-arabic' : isRussian ? 'russian font-russian' : 'english'}">${isArabic ? 'إيرادات العام الماضي:' : isRussian ? 'Доход за прошлый год:' : 'Last Year\'s Revenue:'}</td>
+              <td class="py-2">${formData.get('revenue') ? '$' + formData.get('revenue') : '-'}</td>
+            </tr>
+            <tr class="border-b border-gray-100">
+              <td class="py-2 font-medium ${isArabic ? 'arabic font-arabic' : isRussian ? 'russian font-russian' : 'english'}">${isArabic ? 'هل للشركة مستودع؟' : isRussian ? 'У компании есть склад?' : 'Has Warehouse?'}</td>
+              <td class="py-2">${formData.get('hasWarehouse') === 'yes' ? 
+                (isArabic ? 'نعم' : isRussian ? 'Да' : 'Yes') : 
+                (isArabic ? 'لا' : isRussian ? 'Нет' : 'No')}</td>
+            </tr>
+      `;
+      
+      if (formData.get('hasWarehouse') === 'yes') {
+        html += `
+            <tr class="border-b border-gray-100">
+              <td class="py-2 font-medium ${isArabic ? 'arabic font-arabic' : isRussian ? 'russian font-russian' : 'english'}">${isArabic ? 'مساحة المستودع:' : isRussian ? 'Площадь склада:' : 'Warehouse Area:'}</td>
+              <td class="py-2">${formData.get('warehouseArea') || '-'} ${isArabic ? 'متر مربع' : isRussian ? 'кв.м' : 'sq.m'}</td>
+            </tr>
+        `;
+      }
+      
+      // 宣传途径
+      const promotions = [];
+      formData.getAll('promotion').forEach(channel => {
+        const channelMap = {
+          'website': { english: 'Website', arabic: 'الموقع الإلكتروني', russian: 'Веб-сайт' },
+          'social': { english: 'Social Media', arabic: 'الوسائط الاجتماعية', russian: 'Социальные сети' },
+          'exhibition': { english: 'Exhibitions', arabic: 'المعارض', russian: 'Выставки' },
+          'agents': { english: 'Agents', arabic: 'الوكلاء', russian: 'Агенты' },
+          'ads': { english: 'Advertisements', arabic: 'الإعلانات', russian: 'Реклама' },
+          'other': { english: 'Other', arabic: 'أخرى', russian: 'Другое' }
+        };
+        promotions.push(channelMap[channel][currentLanguage] || channel);
+      });
+      
+      html += `
+            <tr class="border-b border-gray-100">
+              <td class="py-2 font-medium ${isArabic ? 'arabic font-arabic' : isRussian ? 'russian font-russian' : 'english'}">${isArabic ? 'قنوات الترويج:' : isRussian ? 'Текущие каналы продвижения:' : 'Promotion Channels:'}</td>
+              <td class="py-2">${promotions.length > 0 ? promotions.join(', ') : '-'}</td>
+            </tr>
+          </table>
+        </div>
+      `;
+      
+      // 联系人信息部分
+      html += `
+        <div class="mb-6">
+          <h4 class="text-lg font-semibold mb-3 pb-1 border-b border-gray-200 ${isArabic ? 'arabic font-arabic' : isRussian ? 'russian font-russian' : 'english'}">
+            ${isArabic ? 'بيانات الاتصال' : isRussian ? 'Контактное лицо' : 'Contact Person'}
+          </h4>
+          <table class="w-full">
+            <tr class="border-b border-gray-100">
+              <td class="py-2 w-1/3 font-medium ${isArabic ? 'arabic font-arabic' : isRussian ? 'russian font-russian' : 'english'}">${isArabic ? 'شخص الاتصال:' : isRussian ? 'Контактное лицо:' : 'Contact Person:'}</td>
+              <td class="py-2">${formData.get('contactPerson') || '-'}</td>
+            </tr>
+            <tr class="border-b border-gray-100">
+              <td class="py-2 font-medium ${isArabic ? 'arabic font-arabic' : isRussian ? 'russian font-russian' : 'english'}">${isArabic ? 'المنصب:' : isRussian ? 'Должность:' : 'Position:'}</td>
+              <td class="py-2">${formData.get('position') || '-'}</td>
+            </tr>
+            <tr class="border-b border-gray-100">
+              <td class="py-2 font-medium ${isArabic ? 'arabic font-arabic' : isRussian ? 'russian font-russian' : 'english'}">${isArabic ? 'البريد الإلكتروني:' : isRussian ? 'Контактный email:' : 'Contact Email:'}</td>
+              <td class="py-2">${formData.get('email') || '-'}</td>
+            </tr>
+            <tr class="border-b border-gray-100">
+              <td class="py-2 font-medium ${isArabic ? 'arabic font-arabic' : isRussian ? 'russian font-russian' : 'english'}">${isArabic ? 'رقم الهاتف:' : isRussian ? 'Номер телефона:' : 'Phone Number:'}</td>
+              <td class="py-2">${formData.get('phone') || '-'}</td>
+            </tr>
+            <tr class="border-b border-gray-100">
+              <td class="py-2 font-medium ${isArabic ? 'arabic font-arabic' : isRussian ? 'russian font-russian' : 'english'}">${isArabic ? 'البطاقة العملية:' : isRussian ? 'Визитка:' : 'Business Card:'}</td>
+              <td class="py-2">${document.getElementById('businessCard').files.length > 0 ? 
+                (isArabic ? 'تم التحميل' : isRussian ? 'Загружено' : 'Uploaded') : '-'}</td>
+            </tr>
+          </table>
+        </div>
+      `;
+      
+      // 业务信息部分
+      html += `
+        <div>
+          <h4 class="text-lg font-semibold mb-3 pb-1 border-b border-gray-200 ${isArabic ? 'arabic font-arabic' : isRussian ? 'russian font-russian' : 'english'}">
+            ${isArabic ? 'معلومات العمل' : isRussian ? 'Информация о бизнесе' : 'Business Information'}
+          </h4>
+          <table class="w-full">
+            <tr class="border-b border-gray-100">
+              <td class="py-2 w-1/3 font-medium ${isArabic ? 'arabic font-arabic' : isRussian ? 'russian font-russian' : 'english'}">${isArabic ? 'هل تبيع المنتجات الكهربائية؟' : isRussian ? 'Продаете ли вы электротехнику?' : 'Sells electrical products?'}</td>
+              <td class="py-2">${formData.get('sell') === 'yes' ? 
+                (isArabic ? 'نعم' : isRussian ? 'Да' : 'Yes') : 
+                (isArabic ? 'لا' : isRussian ? 'Нет' : 'No')}</td>
+            </tr>
+            <tr class="border-b border-gray-100">
+              <td class="py-2 font-medium ${isArabic ? 'arabic font-arabic' : isRussian ? 'russian font-russian' : 'english'}">${isArabic ? 'هل تقدم خدمات التثبيت؟' : isRussian ? 'Предоставляете ли услуги по установке?' : 'Provides installation services?'}</td>
+              <td class="py-2">${formData.get('service') === 'yes' ? 
+                (isArabic ? 'نعم' : isRussian ? 'Да' : 'Yes') : 
+                (isArabic ? 'لا' : isRussian ? 'Нет' : 'No')}</td>
+            </tr>
+            <tr class="border-b border-gray-100">
+              <td class="py-2 font-medium ${isArabic ? 'arabic font-arabic' : isRussian ? 'russian font-russian' : 'english'}">${isArabic ? 'هل أنت مهتم بمنتجات CNC؟' : isRussian ? 'Заинтересованы ли вы продуктами CNC?' : 'Interested in CNC products?'}</td>
+              <td class="py-2">${formData.get('interest') === 'yes' ? 
+                (isArabic ? 'نعم' : isRussian ? 'Да' : 'Yes') : 
+                (isArabic ? 'لا' : isRussian ? 'Нет' : 'No')}</td>
+            </tr>
+            <tr>
+              <td class="py-2 font-medium ${isArabic ? 'arabic font-arabic' : isRussian ? 'russian font-russian' : 'english'}">${isArabic ? 'متطلبات المنتج:' : isRussian ? 'Требования к продукту:' : 'Product Requirements:'}</td>
+              <td class="py-2">${formData.get('product需求') || '-'}</td>
+            </tr>
+          </table>
+        </div>
+      `;
+      
+      previewContent.innerHTML = html;
+      
+      // 应用文本方向
+      previewContent.dir = isArabic ? 'rtl' : 'ltr';
+    }
+    
+    // 获取下拉框选中的文本（增加俄语支持）
+    function getSelectText(id, isArabic, isRussian) {
+      const select = document.getElementById(id);
+      if (select.selectedIndex === -1) return '';
+      
+      const optionElement = select.options[select.selectedIndex];
+      if (isArabic) {
+        const arabicText = optionElement.querySelector('.arabic');
+        return arabicText ? arabicText.textContent : optionElement.textContent;
+      } else if (isRussian) {
+        const russianText = optionElement.querySelector('.russian');
+        return russianText ? russianText.textContent : optionElement.textContent;
+      } else {
+        const englishText = optionElement.querySelector('.english');
+        return englishText ? englishText.textContent : optionElement.textContent;
+      }
+    }
+    
+    // 设置预览模态框
+    function setupPreviewModal() {
+      const previewBtn = document.getElementById('previewBtn');
+      const previewModal = document.getElementById('previewModal');
+      const closePreview = document.getElementById('closePreview');
+      
+      previewBtn.addEventListener('click', function() {
+        const form = document.getElementById('customerForm');
+        if (!form.checkValidity()) {
+          form.reportValidity();
+          return;
+        }
+        
+        generatePreview();
+        previewModal.classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+      });
+      
+      closePreview.addEventListener('click', function() {
+        previewModal.classList.add('hidden');
+        document.body.style.overflow = '';
+      });
+      
+      previewModal.addEventListener('click', function(e) {
+        if (e.target === previewModal) {
+          previewModal.classList.add('hidden');
+          document.body.style.overflow = '';
+        }
+      });
+    }
+    
+    // 创建邮件内容并打开邮件客户端 - 增加俄语支持
+    function setupEmailSending() {
+      const sendEmailBtn = document.getElementById('sendEmailBtn');
+      const sendFromPreview = document.getElementById('sendFromPreview');
+      const successMessage = document.getElementById('successMessage');
+      const previewModal = document.getElementById('previewModal');
+      
+      function sendEmail() {
+        const form = document.getElementById('customerForm');
+        if (!form.checkValidity()) {
+          form.reportValidity();
+          return;
+        }
+        
+        const formData = new FormData(form);
+        const isArabic = currentLanguage === 'arabic';
+        const isRussian = currentLanguage === 'russian';
+        
+        // 构建邮件主题
+        const subject = `Customer Information - ${formData.get('company')} - ${formData.get('formDate')}`;
+        
+        // 构建邮件正文（根据当前语言）
+        let body = isArabic ? 
+          `تقديم نموذج معلومات العميل\n` : 
+          isRussian ? `Отправка формы с данными клиента\n` : 
+          `Customer Information Form Submission\n`;
+          
+        body += `========================================\n\n`;
+        
+        // 添加公司信息
+        body += isArabic ? `معلومات الشركة:\n` : isRussian ? `Информация о компании:\n` : `Company Information:\n`;
+        body += `${isArabic ? 'الاسم: ' : isRussian ? 'Название: ' : 'Name: '}${formData.get('company')}\n`;
+        body += `${isArabic ? 'الموقع الإلكتروني: ' : isRussian ? 'Веб-сайт: ' : 'Website: '}${formData.get('website') || (isArabic ? 'غير متوفر' : isRussian ? 'Не указано' : 'N/A')}\n`;
+        body += `${isArabic ? 'البلد: ' : isRussian ? 'Страна: ' : 'Country: '}${formData.get('country')}\n`;
+        body += `${isArabic ? 'المدينة: ' : isRussian ? 'Город: ' : 'City: '}${formData.get('city')}\n`;
+        body += `${isArabic ? 'سنة التأسيس: ' : isRussian ? 'Год основания: ' : 'Year Established: '}${formData.get('year')}\n`;
+        body += `${isArabic ? 'نوع العمل: ' : isRussian ? 'Тип бизнеса: ' : 'Business Type: '}${getSelectText('type', isArabic, isRussian)}\n`;
+        body += `${isArabic ? 'عدد المتاجر: ' : isRussian ? 'Количество магазинов: ' : 'Number of Stores: '}${formData.get('storeCount')}\n`;
+        body += `${isArabic ? 'إيرادات العام الماضي: ' : isRussian ? 'Доход за прошлый год: ' : 'Last Year\'s Revenue: '}$${formData.get('revenue')}\n`;
+        body += `${isArabic ? 'هل للشركة مستودع: ' : isRussian ? 'У компании есть склад: ' : 'Has Warehouse: '}${formData.get('hasWarehouse') === 'yes' ? 
+          (isArabic ? 'نعم' : isRussian ? 'Да' : 'Yes') : 
+          (isArabic ? 'لا' : isRussian ? 'Нет' : 'No')}\n`;
+        
+        if (formData.get('hasWarehouse') === 'yes') {
+          body += `${isArabic ? 'مساحة المستودع: ' : isRussian ? 'Площадь склада: ' : 'Warehouse Area: '}${formData.get('warehouseArea') || (isArabic ? 'غير متوفر' : isRussian ? 'Не указано' : 'N/A')} ${isArabic ? 'متر مربع' : isRussian ? 'кв.м' : 'sq.m'}\n`;
+        }
+        
+        // 宣传途径
+        const promotions = [];
+        formData.getAll('promotion').forEach(channel => {
+          const channelMap = {
+            'website': { english: 'Website', arabic: 'الموقع الإلكتروني', russian: 'Веб-сайт' },
+            'social': { english: 'Social Media', arabic: 'الوسائط الاجتماعية', russian: 'Социальные сети' },
+            'exhibition': { english: 'Exhibitions', arabic: 'المعارض', russian: 'Выставки' },
+            'agents': { english: 'Agents', arabic: 'الوكلاء', russian: 'Агенты' },
+            'ads': { english: 'Advertisements', arabic: 'الإعلانات', russian: 'Реклама' },
+            'other': { english: 'Other', arabic: 'أخرى', russian: 'Другое' }
+          };
+          promotions.push(channelMap[channel][currentLanguage] || channel);
+        });
+        body += `${isArabic ? 'قنوات الترويج: ' : isRussian ? 'Каналы продвижения: ' : 'Promotion Channels: '}${promotions.length > 0 ? promotions.join(', ') : (isArabic ? 'غير متوفر' : isRussian ? 'Не указано' : 'N/A')}\n\n`;
+        
+        // 联系人信息
+        body += isArabic ? `بيانات الاتصال:\n` : isRussian ? `Контактная информация:\n` : `Contact Person:\n`;
+        body += `${isArabic ? 'الاسم: ' : isRussian ? 'Имя: ' : 'Name: '}${formData.get('contactPerson')}\n`;
+        body += `${isArabic ? 'المنصب: ' : isRussian ? 'Должность: ' : 'Position: '}${formData.get('position')}\n`;
+        body += `${isArabic ? 'البريد الإلكتروني: ' : isRussian ? 'Email: ' : 'Email: '}${formData.get('email')}\n`;
+        body += `${isArabic ? 'رقم الهاتف: ' : isRussian ? 'Телефон: ' : 'Phone: '}${formData.get('phone')}\n\n`;
+        
+        // 业务信息
+        body += isArabic ? `معلومات العمل:\n` : isRussian ? `Информация о бизнесе:\n` : `Business Information:\n`;
+        body += `${isArabic ? 'هل تبيع المنتجات الكهربائية: ' : isRussian ? 'Продажа электротехники: ' : 'Sells electrical products: '}${formData.get('sell') === 'yes' ? 
+          (isArabic ? 'نعم' : isRussian ? 'Да' : 'Yes') : 
+          (isArabic ? 'لا' : isRussian ? 'Нет' : 'No')}\n`;
+        body += `${isArabic ? 'هل تقدم خدمات التثبيت: ' : isRussian ? 'Услуги по установке: ' : 'Provides installation services: '}${formData.get('service') === 'yes' ? 
+          (isArabic ? 'نعم' : isRussian ? 'Да' : 'Yes') : 
+          (isArabic ? 'لا' : isRussian ? 'Нет' : 'No')}\n`;
+        body += `${isArabic ? 'هل أنت مهتم بمنتجات CNC: ' : isRussian ? 'Интерес к продуктам CNC: ' : 'Interested in CNC products: '}${formData.get('interest') === 'yes' ? 
+          (isArabic ? 'نعم' : isRussian ? 'Да' : 'Yes') : 
+          (isArabic ? 'لا' : isRussian ? 'Нет' : 'No')}\n`;
+        body += `${isArabic ? 'متطلبات المنتج: ' : isRussian ? 'Требования к продукту: ' : 'Product Requirements: '}${formData.get('product需求') || (isArabic ? 'غير متوفر' : isRussian ? 'Не указано' : 'N/A')}\n\n`;
+        
+        body += `${isArabic ? 'تم التقديم في: ' : isRussian ? 'Отправлено: ' : 'Submitted on: '}${formData.get('formDate')}\n`;
+        
+        // 编码邮件主题和正文
+        const encodedSubject = encodeURIComponent(subject);
+        const encodedBody = encodeURIComponent(body);
+        
+        // 收件人邮箱地址
+        const toEmail = 'jansy@cncele.com';
+        
+        // 创建mailto链接
+        const mailtoLink = `mailto:${toEmail}?subject=${encodedSubject}&body=${encodedBody}`;
+        
+        // 打开邮件客户端
+        window.location.href = mailtoLink;
+        
+        // 显示成功消息
+        successMessage.classList.remove('hidden');
+        
+        // 5秒后隐藏成功消息
+        setTimeout(() => {
+          successMessage.classList.add('hidden');
+        }, 5000);
+      }
+      
+      sendEmailBtn.addEventListener('click', sendEmail);
+      sendFromPreview.addEventListener('click', function() {
+        sendEmail();
+        previewModal.classList.add('hidden');
+        document.body.style.overflow = '';
+      });
+    }
+    
+    // 添加输入动画效果
+    function setupInputAnimations() {
+      const inputs = document.querySelectorAll('input, select, textarea');
+      inputs.forEach(input => {
+        input.addEventListener('focus', function() {
+          this.parentElement.classList.add('scale-[1.01]');
+          this.parentElement.style.transition = 'transform 0.2s ease';
+        });
+        
+        input.addEventListener('blur', function() {
+          this.parentElement.classList.remove('scale-[1.01]');
+        });
+      });
+    }
+    
+    // 页面加载完成后初始化
+    document.addEventListener('DOMContentLoaded', function() {
+      setCurrentDate();
+      setupWarehouseAreaToggle();
+      setupPreviewModal();
+      setupEmailSending();
+      setupInputAnimations();
+      
+      // 语言切换按钮事件 - 添加俄语按钮事件
+      document.getElementById('englishBtn').addEventListener('click', () => switchLanguage('english'));
+      document.getElementById('arabicBtn').addEventListener('click', () => switchLanguage('arabic'));
+      document.getElementById('russianBtn').addEventListener('click', () => switchLanguage('russian'));
+    });
+  </script>
+</body>
+</html>
+    
